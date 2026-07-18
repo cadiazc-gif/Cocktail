@@ -1,0 +1,80 @@
+{
+  "generated_for": "revision_manual",
+  "policy": "mantener solo la version en espanol",
+  "safe_proposals": [
+    {
+      "merge_from": "Mint",
+      "merge_into": "Menta",
+      "cocktails_affected": 12,
+      "reason": "Duplicado claro ingles/espanol"
+    },
+    {
+      "merge_from": "Lemon Juice",
+      "merge_into": "Jugo de limon",
+      "cocktails_affected": 49,
+      "reason": "Duplicado claro ingles/espanol"
+    },
+    {
+      "merge_from": "Fresh Lemon Juice",
+      "merge_into": "Jugo de limon",
+      "cocktails_affected": 1,
+      "reason": "Misma base de ingrediente; la variante fresh se normaliza al nombre en espanol"
+    },
+    {
+      "merge_from": "Lime juice",
+      "merge_into": "Jugo de lima",
+      "cocktails_affected": 32,
+      "reason": "Duplicado claro ingles/espanol"
+    },
+    {
+      "merge_from": "Fresh Lime Juice",
+      "merge_into": "Jugo de lima",
+      "cocktails_affected": 1,
+      "reason": "Misma base de ingrediente; la variante fresh se normaliza al nombre en espanol"
+    },
+    {
+      "merge_from": "Pineapple juice",
+      "merge_into": "Jugo de pinia",
+      "cocktails_affected": 21,
+      "reason": "Duplicado claro ingles/espanol"
+    },
+    {
+      "merge_from": "Sugar syrup",
+      "merge_into": "Jarabe simple",
+      "cocktails_affected": 16,
+      "reason": "Normalizacion a nombre comun en espanol"
+    },
+    {
+      "merge_from": "Sugar",
+      "merge_into": "Azucar",
+      "cocktails_affected": 50,
+      "reason": "Duplicado claro ingles/espanol"
+    },
+    {
+      "merge_from": "Cream of coconut",
+      "merge_into": "Crema de coco",
+      "cocktails_affected": 1,
+      "reason": "Duplicado claro ingles/espanol"
+    },
+    {
+      "merge_from": "Angostura Bitters",
+      "merge_into": "Amargo de angostura",
+      "cocktails_affected": 14,
+      "reason": "Duplicado claro ingles/espanol"
+    },
+    {
+      "merge_from": "Soda Water",
+      "merge_into": "Agua con gas",
+      "cocktails_affected": 19,
+      "reason": "Duplicado funcional ingles/espanol"
+    }
+  ],
+  "needs_review": [
+    {
+      "merge_from": "Club soda",
+      "merge_into": "Agua con gas",
+      "cocktails_affected": 7,
+      "reason": "Muy parecido, pero puede depender de si quieres distinguir club soda de soda water"
+    }
+  ]
+}

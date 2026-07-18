@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carta del Bar</title>
+    <link rel="stylesheet" href="/static/styles.css?v=20260414c" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero">
+        <div class="hero-top">
+          <div>
+            <div class="hero-badge">Carta digital del bar</div>
+            <h1>Cocteles disponibles ahora</h1>
+            <p>
+              Explora la carta activa, filtra por estilo o ingrediente y abre cada
+              coctel para ver medidas, tags y preparación paso a paso.
+            </p>
+          </div>
+          <a class="button secondary" href="/a">Administrador</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <strong id="heroCount">0</strong>
+            <span>Cocteles en la carta</span>
+          </div>
+          <div class="hero-stat">
+            <strong>QR fijo</strong>
+            <span>Abre siempre en /m</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="filters">
+        <div class="filters-grid">
+          <label>
+            Buscar por ingrediente
+            <input id="ingredientFilter" placeholder="tequila, menta, gin..." />
+          </label>
+          <label>
+            Tag
+            <div class="filter-picker" data-picker="public-tag">
+              <button id="tagFilterButton" class="picker-button" type="button">Todos los tags</button>
+              <div id="tagFilterPanel" class="picker-panel hidden">
+                <input id="tagSearchInput" class="picker-search" placeholder="Buscar tag..." />
+                <div id="tagFilterOptions" class="picker-options"></div>
+              </div>
+            </div>
+          </label>
+          <label>
+            Alcohol
+            <select id="alcoholFilter">
+              <option value="all">Todos</option>
+              <option value="Fuerte">Fuerte</option>
+              <option value="Medio">Medio</option>
+              <option value="Suave">Suave</option>
+              <option value="Sin alcohol">Sin alcohol</option>
+            </select>
+          </label>
+          <label>
+            Vaso
+            <div class="filter-picker" data-picker="public-glass">
+              <button id="glassFilterButton" class="picker-button" type="button">Todos los vasos</button>
+              <div id="glassFilterPanel" class="picker-panel hidden">
+                <input id="glassSearchInput" class="picker-search" placeholder="Buscar vaso..." />
+                <div id="glassFilterOptions" class="picker-options"></div>
+              </div>
+            </div>
+          </label>
+          <label>
+            Lista especial
+            <select id="listFilter">
+              <option value="">Todas las listas</option>
+            </select>
+          </label>
+          <label>
+            Favoritos
+            <button id="favoriteFilter" class="chip star-filter" type="button" aria-pressed="false" title="Filtrar favoritos">&#9734;</button>
+          </label>
+          <label>
+            Nota
+            <select id="ratingFilter">
+              <option value="all">Todas</option>
+              <option value="0">Sin probar (0)</option>
+              <option value="3">3 o más</option>
+              <option value="4">4 o más</option>
+              <option value="4.5">4.5 o más</option>
+            </select>
+          </label>
+          <label>
+            Ordenar
+            <select id="sortFilter">
+              <option value="rating-desc">Mejor nota</option>
+              <option value="alpha-asc">Abecedario A-Z</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section id="cocktailGrid" class="menu-list"></section>
+      <p class="footer-note">QR fijo sugerido: apunta siempre a `/m`.</p>
+    </main>
+    <script src="/static/menu.js?v=20260415a"></script>
+  </body>
+</html>

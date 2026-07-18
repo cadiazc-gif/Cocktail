@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: cocktail-bar-manager
+    runtime: python
+    plan: free
+    buildCommand: echo "No build step required"
+    startCommand: python main.py

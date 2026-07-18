@@ -1,0 +1,618 @@
+{
+  "settings": {
+    "admin_password_hash": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"
+  },
+  "ingredients": [
+    {
+      "id": 1,
+      "name": "Tequila",
+      "category": "Destilado",
+      "alcoholic": true
+    },
+    {
+      "id": 2,
+      "name": "Ron blanco",
+      "category": "Destilado",
+      "alcoholic": true
+    },
+    {
+      "id": 3,
+      "name": "Whisky",
+      "category": "Destilado",
+      "alcoholic": true
+    },
+    {
+      "id": 4,
+      "name": "Pisco",
+      "category": "Destilado",
+      "alcoholic": true
+    },
+    {
+      "id": 5,
+      "name": "Gin",
+      "category": "Destilado",
+      "alcoholic": true
+    },
+    {
+      "id": 6,
+      "name": "Vodka",
+      "category": "Destilado",
+      "alcoholic": true
+    },
+    {
+      "id": 7,
+      "name": "Jugo de limon",
+      "category": "Citricos",
+      "alcoholic": false
+    },
+    {
+      "id": 8,
+      "name": "Jugo de lima",
+      "category": "Citricos",
+      "alcoholic": false
+    },
+    {
+      "id": 9,
+      "name": "Hielo",
+      "category": "Basicos",
+      "alcoholic": false
+    },
+    {
+      "id": 10,
+      "name": "Menta",
+      "category": "Hierbas",
+      "alcoholic": false
+    },
+    {
+      "id": 11,
+      "name": "Agua con gas",
+      "category": "Mezcladores",
+      "alcoholic": false
+    },
+    {
+      "id": 12,
+      "name": "Azucar",
+      "category": "Endulzantes",
+      "alcoholic": false
+    },
+    {
+      "id": 13,
+      "name": "Jarabe simple",
+      "category": "Endulzantes",
+      "alcoholic": false
+    },
+    {
+      "id": 14,
+      "name": "Triple sec",
+      "category": "Licores",
+      "alcoholic": true
+    },
+    {
+      "id": 15,
+      "name": "Vermut rojo",
+      "category": "Licores",
+      "alcoholic": true
+    },
+    {
+      "id": 16,
+      "name": "Amargo de angostura",
+      "category": "Bitters",
+      "alcoholic": true
+    },
+    {
+      "id": 17,
+      "name": "Cola",
+      "category": "Mezcladores",
+      "alcoholic": false
+    },
+    {
+      "id": 18,
+      "name": "Jugo de pinia",
+      "category": "Jugos",
+      "alcoholic": false
+    },
+    {
+      "id": 19,
+      "name": "Crema de coco",
+      "category": "Mezcladores",
+      "alcoholic": false
+    },
+    {
+      "id": 20,
+      "name": "Soda",
+      "category": "Mezcladores",
+      "alcoholic": false
+    }
+  ],
+  "inventory": {
+    "1": {
+      "in_stock": true,
+      "low_stock": false,
+      "quantity_label": "1 botella"
+    },
+    "2": {
+      "in_stock": true,
+      "low_stock": true,
+      "quantity_label": "queda poco"
+    },
+    "3": {
+      "in_stock": true,
+      "low_stock": false,
+      "quantity_label": "2 botellas"
+    },
+    "4": {
+      "in_stock": true,
+      "low_stock": false,
+      "quantity_label": "1 botella"
+    },
+    "5": {
+      "in_stock": true,
+      "low_stock": false,
+      "quantity_label": "1 botella"
+    },
+    "7": {
+      "in_stock": true,
+      "low_stock": false,
+      "quantity_label": "500 ml"
+    },
+    "9": {
+      "in_stock": true,
+      "low_stock": false,
+      "quantity_label": "abundante"
+    },
+    "10": {
+      "in_stock": true,
+      "low_stock": true,
+      "quantity_label": "pocas ramas"
+    },
+    "11": {
+      "in_stock": true,
+      "low_stock": false,
+      "quantity_label": "6 botellas"
+    },
+    "13": {
+      "in_stock": true,
+      "low_stock": false,
+      "quantity_label": "250 ml"
+    },
+    "14": {
+      "in_stock": true,
+      "low_stock": false,
+      "quantity_label": "1 botella"
+    },
+    "16": {
+      "in_stock": true,
+      "low_stock": false,
+      "quantity_label": "1 botella"
+    },
+    "17": {
+      "in_stock": true,
+      "low_stock": false,
+      "quantity_label": "8 latas"
+    },
+    "18": {
+      "in_stock": false,
+      "low_stock": false,
+      "quantity_label": ""
+    },
+    "19": {
+      "in_stock": false,
+      "low_stock": false,
+      "quantity_label": ""
+    },
+    "20": {
+      "in_stock": true,
+      "low_stock": false,
+      "quantity_label": "4 botellas"
+    }
+  },
+  "shopping": [
+    {
+      "ingredient_id": 18,
+      "note": "Comprar para cocteles tropicales",
+      "done": false
+    },
+    {
+      "ingredient_id": 19,
+      "note": "Falta para pina colada",
+      "done": false
+    }
+  ],
+  "cocktails": [
+    {
+      "id": 1,
+      "name": "Margarita",
+      "description": "Clasico coctel citrico con tequila.",
+      "image_url": "https://images.unsplash.com/photo-1551751299-1b51cab2694c?auto=format&fit=crop&w=900&q=80",
+      "prep_time_minutes": 5,
+      "difficulty": "media",
+      "strength": "media",
+      "is_alcoholic": true,
+      "instructions": "Agita y sirve en copa fria.",
+      "rating": 4.7,
+      "is_favorite": true,
+      "is_active": true,
+      "tags": [
+        "citricos",
+        "fiesta",
+        "fuerte"
+      ],
+      "steps": [
+        {
+          "step_number": 1,
+          "instruction": "Enfria la copa."
+        },
+        {
+          "step_number": 2,
+          "instruction": "Agrega tequila, citrico, triple sec y hielo a una coctelera."
+        },
+        {
+          "step_number": 3,
+          "instruction": "Agita 15 segundos y cuela."
+        }
+      ],
+      "requirements": [
+        {
+          "group_key": "base",
+          "amount": "2",
+          "unit": "oz",
+          "optional": false,
+          "options": [
+            1
+          ]
+        },
+        {
+          "group_key": "citrico",
+          "amount": "1",
+          "unit": "oz",
+          "optional": false,
+          "options": [
+            7,
+            8
+          ]
+        },
+        {
+          "group_key": "licor",
+          "amount": "1",
+          "unit": "oz",
+          "optional": false,
+          "options": [
+            14
+          ]
+        },
+        {
+          "group_key": "frio",
+          "amount": "al gusto",
+          "unit": "",
+          "optional": false,
+          "options": [
+            9
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Mojito",
+      "description": "Refrescante, con menta y citricos.",
+      "image_url": "https://images.unsplash.com/photo-1575023782549-62ca0d244b39?auto=format&fit=crop&w=900&q=80",
+      "prep_time_minutes": 7,
+      "difficulty": "media",
+      "strength": "suave",
+      "is_alcoholic": true,
+      "instructions": "Macerar, mezclar y completar con gas.",
+      "rating": 4.8,
+      "is_favorite": true,
+      "is_active": true,
+      "tags": [
+        "refrescante",
+        "citricos",
+        "fiesta"
+      ],
+      "steps": [
+        {
+          "step_number": 1,
+          "instruction": "Macerar menta suavemente con el citrico y el jarabe."
+        },
+        {
+          "step_number": 2,
+          "instruction": "Agregar ron o pisco e incorporar hielo."
+        },
+        {
+          "step_number": 3,
+          "instruction": "Completar con agua con gas y mezclar corto."
+        }
+      ],
+      "requirements": [
+        {
+          "group_key": "base",
+          "amount": "2",
+          "unit": "oz",
+          "optional": false,
+          "options": [
+            2,
+            4
+          ]
+        },
+        {
+          "group_key": "hierba",
+          "amount": "8",
+          "unit": "hojas",
+          "optional": false,
+          "options": [
+            10
+          ]
+        },
+        {
+          "group_key": "citrico",
+          "amount": "1",
+          "unit": "oz",
+          "optional": false,
+          "options": [
+            7
+          ]
+        },
+        {
+          "group_key": "dulzor",
+          "amount": "0.75",
+          "unit": "oz",
+          "optional": false,
+          "options": [
+            13
+          ]
+        },
+        {
+          "group_key": "gas",
+          "amount": "top",
+          "unit": "",
+          "optional": false,
+          "options": [
+            11
+          ]
+        },
+        {
+          "group_key": "frio",
+          "amount": "al gusto",
+          "unit": "",
+          "optional": false,
+          "options": [
+            9
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Whisky Cola",
+      "description": "Simple, rapido y directo.",
+      "image_url": "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=900&q=80",
+      "prep_time_minutes": 3,
+      "difficulty": "facil",
+      "strength": "media",
+      "is_alcoholic": true,
+      "instructions": "Servir sobre hielo y completar con cola.",
+      "rating": 4.0,
+      "is_favorite": false,
+      "is_active": true,
+      "tags": [
+        "rapido",
+        "fuerte"
+      ],
+      "steps": [
+        {
+          "step_number": 1,
+          "instruction": "Llena el vaso con hielo."
+        },
+        {
+          "step_number": 2,
+          "instruction": "Sirve whisky."
+        },
+        {
+          "step_number": 3,
+          "instruction": "Completa con cola."
+        }
+      ],
+      "requirements": [
+        {
+          "group_key": "base",
+          "amount": "2",
+          "unit": "oz",
+          "optional": false,
+          "options": [
+            3
+          ]
+        },
+        {
+          "group_key": "mezcla",
+          "amount": "top",
+          "unit": "",
+          "optional": false,
+          "options": [
+            17
+          ]
+        },
+        {
+          "group_key": "frio",
+          "amount": "al gusto",
+          "unit": "",
+          "optional": false,
+          "options": [
+            9
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Pina Colada",
+      "description": "Tropical y dulce.",
+      "image_url": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=900&q=80",
+      "prep_time_minutes": 8,
+      "difficulty": "media",
+      "strength": "suave",
+      "is_alcoholic": true,
+      "instructions": "Licuar o agitar hasta integrar.",
+      "rating": 4.6,
+      "is_favorite": true,
+      "is_active": true,
+      "tags": [
+        "dulce",
+        "fiesta"
+      ],
+      "steps": [
+        {
+          "step_number": 1,
+          "instruction": "Agrega todos los ingredientes a una licuadora."
+        },
+        {
+          "step_number": 2,
+          "instruction": "Licua hasta obtener textura cremosa."
+        },
+        {
+          "step_number": 3,
+          "instruction": "Sirve en vaso frio."
+        }
+      ],
+      "requirements": [
+        {
+          "group_key": "base",
+          "amount": "2",
+          "unit": "oz",
+          "optional": false,
+          "options": [
+            2,
+            4
+          ]
+        },
+        {
+          "group_key": "jugo",
+          "amount": "3",
+          "unit": "oz",
+          "optional": false,
+          "options": [
+            18
+          ]
+        },
+        {
+          "group_key": "crema",
+          "amount": "1.5",
+          "unit": "oz",
+          "optional": false,
+          "options": [
+            19
+          ]
+        },
+        {
+          "group_key": "frio",
+          "amount": "1",
+          "unit": "taza",
+          "optional": false,
+          "options": [
+            9
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Virgin Fizz",
+      "description": "Opcion sin alcohol para invitados.",
+      "image_url": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=900&q=80",
+      "prep_time_minutes": 4,
+      "difficulty": "facil",
+      "strength": "sin alcohol",
+      "is_alcoholic": false,
+      "instructions": "Mezclar y servir sobre hielo.",
+      "rating": 3.9,
+      "is_favorite": false,
+      "is_active": true,
+      "tags": [
+        "sin alcohol",
+        "rapido",
+        "refrescante"
+      ],
+      "steps": [
+        {
+          "step_number": 1,
+          "instruction": "Sirve hielo en vaso alto."
+        },
+        {
+          "step_number": 2,
+          "instruction": "Agrega jugo de limon y jarabe simple."
+        },
+        {
+          "step_number": 3,
+          "instruction": "Completa con soda y decora con menta si tienes."
+        }
+      ],
+      "requirements": [
+        {
+          "group_key": "citrico",
+          "amount": "1",
+          "unit": "oz",
+          "optional": false,
+          "options": [
+            7
+          ]
+        },
+        {
+          "group_key": "dulzor",
+          "amount": "1",
+          "unit": "oz",
+          "optional": false,
+          "options": [
+            13
+          ]
+        },
+        {
+          "group_key": "gas",
+          "amount": "top",
+          "unit": "",
+          "optional": false,
+          "options": [
+            20
+          ]
+        },
+        {
+          "group_key": "frio",
+          "amount": "al gusto",
+          "unit": "",
+          "optional": false,
+          "options": [
+            9
+          ]
+        },
+        {
+          "group_key": "decoracion",
+          "amount": "2",
+          "unit": "hojas",
+          "optional": true,
+          "options": [
+            10
+          ]
+        }
+      ]
+    }
+  ],
+  "lists": [
+    {
+      "id": 1,
+      "name": "Rapidos de preparar",
+      "description": "Carta corta para momentos con alta demanda",
+      "is_public": true,
+      "cocktail_ids": [
+        3,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Fiesta tequila",
+      "description": "Seleccion para una noche centrada en tequila",
+      "is_public": true,
+      "cocktail_ids": [
+        1
+      ]
+    }
+  ]
+}

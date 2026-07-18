@@ -1,0 +1,607 @@
+{
+  "total_tags_distintos": 46,
+  "tags_conteo": [
+    {
+      "tag": "clasico",
+      "count": 471
+    },
+    {
+      "tag": "citrico",
+      "count": 232
+    },
+    {
+      "tag": "gin",
+      "count": 111
+    },
+    {
+      "tag": "amargo",
+      "count": 52
+    },
+    {
+      "tag": "vino",
+      "count": 49
+    },
+    {
+      "tag": "refrescante",
+      "count": 48
+    },
+    {
+      "tag": "cremoso",
+      "count": 44
+    },
+    {
+      "tag": "rapido",
+      "count": 27
+    },
+    {
+      "tag": "cafe",
+      "count": 26
+    },
+    {
+      "tag": "top-bars",
+      "count": 26
+    },
+    {
+      "tag": "tequila",
+      "count": 22
+    },
+    {
+      "tag": "espumante",
+      "count": 18
+    },
+    {
+      "tag": "frutal",
+      "count": 16
+    },
+    {
+      "tag": "moderno",
+      "count": 15
+    },
+    {
+      "tag": "chileno",
+      "count": 14
+    },
+    {
+      "tag": "sour",
+      "count": 14
+    },
+    {
+      "tag": "campari",
+      "count": 13
+    },
+    {
+      "tag": "bar-top-chile",
+      "count": 12
+    },
+    {
+      "tag": "pisco",
+      "count": 12
+    },
+    {
+      "tag": "martini",
+      "count": 11
+    },
+    {
+      "tag": "verano",
+      "count": 10
+    },
+    {
+      "tag": "aperitivo",
+      "count": 9
+    },
+    {
+      "tag": "chileno-autor",
+      "count": 7
+    },
+    {
+      "tag": "siam-thai",
+      "count": 7
+    },
+    {
+      "tag": "estadounidense",
+      "count": 6
+    },
+    {
+      "tag": "italiano",
+      "count": 5
+    },
+    {
+      "tag": "negroni",
+      "count": 5
+    },
+    {
+      "tag": "tiki",
+      "count": 5
+    },
+    {
+      "tag": "espanol",
+      "count": 4
+    },
+    {
+      "tag": "mezcal",
+      "count": 4
+    },
+    {
+      "tag": "mojito",
+      "count": 4
+    },
+    {
+      "tag": "ingles",
+      "count": 3
+    },
+    {
+      "tag": "mule",
+      "count": 3
+    },
+    {
+      "tag": "argentino",
+      "count": 2
+    },
+    {
+      "tag": "brasileno",
+      "count": 2
+    },
+    {
+      "tag": "jerez",
+      "count": 2
+    },
+    {
+      "tag": "last-word-family",
+      "count": 2
+    },
+    {
+      "tag": "mexicano",
+      "count": 2
+    },
+    {
+      "tag": "old-fashioned",
+      "count": 2
+    },
+    {
+      "tag": "peruano",
+      "count": 2
+    },
+    {
+      "tag": "sobremesa",
+      "count": 2
+    },
+    {
+      "tag": "agave",
+      "count": 1
+    },
+    {
+      "tag": "frances",
+      "count": 1
+    },
+    {
+      "tag": "highball",
+      "count": 1
+    },
+    {
+      "tag": "invierno",
+      "count": 1
+    },
+    {
+      "tag": "navidad",
+      "count": 1
+    }
+  ],
+  "tags_normalizados_conteo": [
+    {
+      "tag_normalizado": "clasico",
+      "count": 471
+    },
+    {
+      "tag_normalizado": "citrico",
+      "count": 232
+    },
+    {
+      "tag_normalizado": "gin",
+      "count": 111
+    },
+    {
+      "tag_normalizado": "amargo",
+      "count": 52
+    },
+    {
+      "tag_normalizado": "vino",
+      "count": 49
+    },
+    {
+      "tag_normalizado": "refrescante",
+      "count": 48
+    },
+    {
+      "tag_normalizado": "cremoso",
+      "count": 44
+    },
+    {
+      "tag_normalizado": "rapido",
+      "count": 27
+    },
+    {
+      "tag_normalizado": "cafe",
+      "count": 26
+    },
+    {
+      "tag_normalizado": "top-bars",
+      "count": 26
+    },
+    {
+      "tag_normalizado": "tequila",
+      "count": 22
+    },
+    {
+      "tag_normalizado": "espumante",
+      "count": 18
+    },
+    {
+      "tag_normalizado": "frutal",
+      "count": 16
+    },
+    {
+      "tag_normalizado": "moderno",
+      "count": 15
+    },
+    {
+      "tag_normalizado": "chileno",
+      "count": 14
+    },
+    {
+      "tag_normalizado": "sour",
+      "count": 14
+    },
+    {
+      "tag_normalizado": "campari",
+      "count": 13
+    },
+    {
+      "tag_normalizado": "bar-top-chile",
+      "count": 12
+    },
+    {
+      "tag_normalizado": "pisco",
+      "count": 12
+    },
+    {
+      "tag_normalizado": "martini",
+      "count": 11
+    },
+    {
+      "tag_normalizado": "verano",
+      "count": 10
+    },
+    {
+      "tag_normalizado": "aperitivo",
+      "count": 9
+    },
+    {
+      "tag_normalizado": "chileno-autor",
+      "count": 7
+    },
+    {
+      "tag_normalizado": "siam-thai",
+      "count": 7
+    },
+    {
+      "tag_normalizado": "estadounidense",
+      "count": 6
+    },
+    {
+      "tag_normalizado": "italiano",
+      "count": 5
+    },
+    {
+      "tag_normalizado": "negroni",
+      "count": 5
+    },
+    {
+      "tag_normalizado": "tiki",
+      "count": 5
+    },
+    {
+      "tag_normalizado": "espanol",
+      "count": 4
+    },
+    {
+      "tag_normalizado": "mezcal",
+      "count": 4
+    },
+    {
+      "tag_normalizado": "mojito",
+      "count": 4
+    },
+    {
+      "tag_normalizado": "ingles",
+      "count": 3
+    },
+    {
+      "tag_normalizado": "mule",
+      "count": 3
+    },
+    {
+      "tag_normalizado": "argentino",
+      "count": 2
+    },
+    {
+      "tag_normalizado": "brasileno",
+      "count": 2
+    },
+    {
+      "tag_normalizado": "jerez",
+      "count": 2
+    },
+    {
+      "tag_normalizado": "last-word-family",
+      "count": 2
+    },
+    {
+      "tag_normalizado": "mexicano",
+      "count": 2
+    },
+    {
+      "tag_normalizado": "old-fashioned",
+      "count": 2
+    },
+    {
+      "tag_normalizado": "peruano",
+      "count": 2
+    },
+    {
+      "tag_normalizado": "sobremesa",
+      "count": 2
+    },
+    {
+      "tag_normalizado": "agave",
+      "count": 1
+    },
+    {
+      "tag_normalizado": "frances",
+      "count": 1
+    },
+    {
+      "tag_normalizado": "highball",
+      "count": 1
+    },
+    {
+      "tag_normalizado": "invierno",
+      "count": 1
+    },
+    {
+      "tag_normalizado": "navidad",
+      "count": 1
+    }
+  ],
+  "propuesta_eliminar": [],
+  "propuesta_mantener": [
+    {
+      "tag": "clasico",
+      "count": 471
+    },
+    {
+      "tag": "citrico",
+      "count": 232
+    },
+    {
+      "tag": "gin",
+      "count": 111
+    },
+    {
+      "tag": "amargo",
+      "count": 52
+    },
+    {
+      "tag": "vino",
+      "count": 49
+    },
+    {
+      "tag": "refrescante",
+      "count": 48
+    },
+    {
+      "tag": "cremoso",
+      "count": 44
+    },
+    {
+      "tag": "rapido",
+      "count": 27
+    },
+    {
+      "tag": "cafe",
+      "count": 26
+    },
+    {
+      "tag": "top-bars",
+      "count": 26
+    },
+    {
+      "tag": "tequila",
+      "count": 22
+    },
+    {
+      "tag": "espumante",
+      "count": 18
+    },
+    {
+      "tag": "frutal",
+      "count": 16
+    },
+    {
+      "tag": "moderno",
+      "count": 15
+    },
+    {
+      "tag": "chileno",
+      "count": 14
+    },
+    {
+      "tag": "sour",
+      "count": 14
+    },
+    {
+      "tag": "campari",
+      "count": 13
+    },
+    {
+      "tag": "bar-top-chile",
+      "count": 12
+    },
+    {
+      "tag": "pisco",
+      "count": 12
+    },
+    {
+      "tag": "martini",
+      "count": 11
+    },
+    {
+      "tag": "verano",
+      "count": 10
+    },
+    {
+      "tag": "aperitivo",
+      "count": 9
+    },
+    {
+      "tag": "chileno-autor",
+      "count": 7
+    },
+    {
+      "tag": "siam-thai",
+      "count": 7
+    },
+    {
+      "tag": "estadounidense",
+      "count": 6
+    },
+    {
+      "tag": "italiano",
+      "count": 5
+    },
+    {
+      "tag": "negroni",
+      "count": 5
+    },
+    {
+      "tag": "tiki",
+      "count": 5
+    },
+    {
+      "tag": "espanol",
+      "count": 4
+    },
+    {
+      "tag": "mezcal",
+      "count": 4
+    },
+    {
+      "tag": "mojito",
+      "count": 4
+    },
+    {
+      "tag": "ingles",
+      "count": 3
+    },
+    {
+      "tag": "mule",
+      "count": 3
+    },
+    {
+      "tag": "argentino",
+      "count": 2
+    },
+    {
+      "tag": "brasileno",
+      "count": 2
+    },
+    {
+      "tag": "jerez",
+      "count": 2
+    },
+    {
+      "tag": "last-word-family",
+      "count": 2
+    },
+    {
+      "tag": "mexicano",
+      "count": 2
+    },
+    {
+      "tag": "old-fashioned",
+      "count": 2
+    },
+    {
+      "tag": "peruano",
+      "count": 2
+    },
+    {
+      "tag": "sobremesa",
+      "count": 2
+    },
+    {
+      "tag": "agave",
+      "count": 1
+    },
+    {
+      "tag": "frances",
+      "count": 1
+    },
+    {
+      "tag": "highball",
+      "count": 1
+    },
+    {
+      "tag": "invierno",
+      "count": 1
+    },
+    {
+      "tag": "navidad",
+      "count": 1
+    }
+  ],
+  "propuesta_tags_supervivientes_normalizados": [
+    "amargo",
+    "aperitivo",
+    "argentino",
+    "bar-top-chile",
+    "brasileno",
+    "cafe",
+    "campari",
+    "chileno",
+    "chileno-autor",
+    "citrico",
+    "clasico",
+    "cremoso",
+    "espanol",
+    "espumante",
+    "estadounidense",
+    "frutal",
+    "gin",
+    "ingles",
+    "invierno",
+    "italiano",
+    "jerez",
+    "last-word-family",
+    "martini",
+    "mexicano",
+    "mezcal",
+    "moderno",
+    "mojito",
+    "mule",
+    "navidad",
+    "negroni",
+    "old-fashioned",
+    "peruano",
+    "pisco",
+    "rapido",
+    "refrescante",
+    "siam-thai",
+    "sobremesa",
+    "sour",
+    "tequila",
+    "tiki",
+    "top-bars",
+    "verano",
+    "vino"
+  ]
+}

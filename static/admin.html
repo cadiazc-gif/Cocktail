@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Administrador del Bar</title>
+    <link rel="stylesheet" href="/static/styles.css?v=20260414d" />
+  </head>
+  <body>
+    <div id="loginView" class="login-wrap">
+      <section class="login-card">
+        <h1>Panel del bar</h1>
+        <p class="muted">
+          Solo el administrador puede editar inventario, compras y catalogo.
+        </p>
+        <div class="stack">
+          <label>
+            Clave
+            <input id="passwordInput" type="password" placeholder="Ingresa tu clave" />
+          </label>
+          <button id="loginButton">Entrar</button>
+          <div id="loginError" class="muted hidden">Clave incorrecta.</div>
+        </div>
+      </section>
+    </div>
+
+    <main id="adminView" class="page-shell hidden">
+      <datalist id="ingredientOptionsDataList"></datalist>
+      <datalist id="unitOptionsDataList"></datalist>
+      <section class="toolbar compact-toolbar compact-toolbar-header">
+        <div class="row-top">
+          <div>
+            <h2>Administrador</h2>
+          </div>
+          <a class="button secondary" href="/m">Ver carta publica</a>
+        </div>
+        <div id="adminNotice" class="notice hidden"></div>
+      </section>
+      <section id="statsGrid" class="toolbar stats-grid"></section>
+
+      <section class="toolbar compact-toolbar">
+        <div id="adminViewModeFilters" class="chip-row"></div>
+      </section>
+
+      <section class="admin-grid compact-admin-grid">
+        <div class="stack" id="ingredientsColumn">
+          <section class="section-card">
+            <div class="row-top">
+              <div>
+                <h3>Ingredientes</h3>
+                <p class="muted">Busca, filtra por categoria y marca stock rapido.</p>
+              </div>
+            </div>
+            <div id="leftPanelModeFilters" class="chip-row"></div>
+            <div class="compact-toolbar">
+              <label>
+                Buscar ingrediente, categoria o tag
+                <input id="ingredientSearchInput" placeholder="tequila, limon, menta, jugo..." />
+              </label>
+            </div>
+            <div id="inventoryCategoryFilters" class="chip-row"></div>
+            <div id="inventoryList"></div>
+          </section>
+
+          <section class="section-card">
+            <div class="row-top">
+              <div>
+                <h3>Lista de compras</h3>
+                <p class="muted">Pendientes, ingredientes bajos y sugerencias por impacto.</p>
+              </div>
+            </div>
+            <div id="leftPanelModeFiltersShopping" class="chip-row"></div>
+            <div id="shoppingList"></div>
+          </section>
+        </div>
+
+        <div class="stack" id="cocktailsColumn">
+          <section class="section-card">
+            <div class="row-top">
+              <div>
+                <h3>Cocteles</h3>
+                <p class="muted">Vista compacta. Toca uno para editar todo de inmediato.</p>
+              </div>
+            </div>
+            <div class="compact-toolbar compact-toolbar-2">
+              <label>
+                Buscar coctel
+                <input id="cocktailSearchInput" placeholder="margarita, negroni, mojito..." />
+              </label>
+              <label>
+                Tag
+                <div class="filter-picker" data-picker="admin-tag">
+                  <button id="cocktailTagFilterButton" class="picker-button" type="button">Todos los tags</button>
+                  <div id="cocktailTagFilterPanel" class="picker-panel hidden">
+                    <input id="cocktailTagSearchInput" class="picker-search" placeholder="Buscar tag..." />
+                    <div id="cocktailTagFilterOptions" class="picker-options"></div>
+                  </div>
+                </div>
+              </label>
+              <label>
+                Vaso
+                <div class="filter-picker" data-picker="admin-glass">
+                  <button id="cocktailGlassFilterButton" class="picker-button" type="button">Todos los vasos</button>
+                  <div id="cocktailGlassFilterPanel" class="picker-panel hidden">
+                    <input id="cocktailGlassSearchInput" class="picker-search" placeholder="Buscar vaso..." />
+                    <div id="cocktailGlassFilterOptions" class="picker-options"></div>
+                  </div>
+                </div>
+              </label>
+              <label>
+                Favoritos
+                <button id="cocktailFavoriteFilter" class="chip star-filter" type="button" aria-pressed="false" title="Filtrar favoritos">&#9734;</button>
+              </label>
+              <label>
+                Nota
+                <select id="cocktailRatingFilter">
+                  <option value="all">Todas</option>
+                  <option value="0">Sin probar (0)</option>
+                  <option value="3">3 o más</option>
+                  <option value="4">4 o más</option>
+                  <option value="4.5">4.5 o más</option>
+                </select>
+              </label>
+            </div>
+            <div id="cocktailStatsFilters" class="chip-row"></div>
+            <div id="catalogCocktailGrid" class="compact-list"></div>
+          </section>
+
+          <section class="panel">
+            <h3>Nuevo coctel</h3>
+            <div class="compact-toolbar compact-toolbar-2">
+              <label>Nombre <input id="newCocktailName" /></label>
+              <label>Foto URL <input id="newCocktailImage" /></label>
+            </div>
+            <label>Descripcion <textarea id="newCocktailDescription" rows="2"></textarea></label>
+            <div class="form-grid">
+              <label>Preparación (min) <input id="newCocktailMinutes" type="number" value="5" min="1" /></label>
+              <label>Alcohol
+                <select id="newCocktailAlcoholLevel">
+                  <option value="Fuerte">Fuerte</option>
+                  <option value="Medio" selected>Medio</option>
+                  <option value="Suave">Suave</option>
+                  <option value="Sin alcohol">Sin alcohol</option>
+                </select>
+              </label>
+            </div>
+            <label>Tipo de vaso o copa <input id="newCocktailGlassware" placeholder="Copa de coctel, vaso highball..." /></label>
+            <label>Resumen de preparacion <textarea id="newCocktailInstructions" rows="2"></textarea></label>
+            <label>Pasos, uno por linea <textarea id="newCocktailSteps" rows="4"></textarea></label>
+            <div class="details">
+              <div class="row-top">
+                <strong>Ingredientes / reemplazos</strong>
+                <button class="secondary mini-button" type="button" id="addNewRequirementButton">agregar fila</button>
+              </div>
+              <div id="newCocktailRequirements" class="requirement-stack"></div>
+            </div>
+            <button id="saveCocktailButton">Crear coctel</button>
+          </section>
+
+          <section class="panel">
+            <h3>Listas publicas</h3>
+            <div id="publicListsPanel" class="stack"></div>
+            <div class="stack">
+              <label>Nombre <input id="newListName" placeholder="Rapidos, tequila, sin alcohol..." /></label>
+              <label>Descripcion <textarea id="newListDescription" rows="2"></textarea></label>
+              <button id="saveListButton">Crear lista</button>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script src="/static/admin-v3.js?v=20260414d"></script>
+  </body>
+</html>
