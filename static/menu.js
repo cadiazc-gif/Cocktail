@@ -1,4 +1,6 @@
 const grid = document.getElementById("cocktailGrid");
+const filtersToggle = document.getElementById("filtersToggle");
+const filtersPanel = document.getElementById("filtersPanel");
 const ingredientFilter = document.getElementById("ingredientFilter");
 const tagSearchInput = document.getElementById("tagSearchInput");
 const tagFilterButton = document.getElementById("tagFilterButton");
@@ -101,9 +103,9 @@ function cardTemplate(cocktail) {
       </button>
       <div class="menu-expanded hidden" data-expanded>
         <div class="menu-expanded-head">
-          <img class="menu-expanded-image" src="${cocktail.image_url}" alt="${cocktail.name}" />
+          <img class="menu-expanded-image" src="${cocktail.image_url}" alt="${cocktail.name}" data-toggle-card />
           <div class="menu-expanded-info">
-            <h2>${cocktail.name} ${star(cocktail)}</h2>
+            <h2 data-toggle-card tabindex="0">${cocktail.name} ${star(cocktail)}</h2>
             <p>${cocktail.description}</p>
             <div class="meta-row">
               <span class="pill">Favorito: ${cocktail.is_favorite ? "Si" : "No"}</span>
@@ -258,6 +260,13 @@ grid.addEventListener("click", (event) => {
     card.classList.add("expanded");
   }
 });
+grid.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const toggle = event.target.closest("[data-toggle-card]");
+  if (!toggle) return;
+  event.preventDefault();
+  toggle.click();
+});
 
 ingredientFilter.addEventListener("input", loadCocktails);
 tagSearchInput.addEventListener("input", () => renderTagPicker());
@@ -267,6 +276,13 @@ favoriteFilter.addEventListener("click", () => {
   favoriteOnly = !favoriteOnly;
   renderFavoriteToggle();
   loadCocktails();
+});
+filtersToggle.addEventListener("click", () => {
+  const isExpanded = filtersToggle.getAttribute("aria-expanded") === "true";
+  filtersToggle.setAttribute("aria-expanded", isExpanded ? "false" : "true");
+  filtersPanel.classList.toggle("hidden", isExpanded);
+  filtersToggle.closest(".filters").classList.toggle("is-collapsed", isExpanded);
+  filtersToggle.querySelector(".filters-toggle-icon").textContent = isExpanded ? "+" : "-";
 });
 tagFilterButton.addEventListener("click", () => {
   tagFilterPanel.classList.toggle("hidden");

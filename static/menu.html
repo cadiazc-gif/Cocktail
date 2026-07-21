@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Carta del Bar</title>
-    <link rel="stylesheet" href="/static/styles.css?v=20260719b" />
+    <link rel="stylesheet" href="/static/styles.css?v=20260719c" />
   </head>
   <body>
     <main class="page-shell">
@@ -18,22 +18,22 @@
               cada bebida con su perfil, ingredientes y preparación en pocos segundos.
             </p>
           </div>
-          <a class="button secondary" href="/a">Administrador</a>
-        </div>
-        <div class="hero-stats">
-          <div class="hero-stat">
+          <div class="hero-actions">
+            <div class="hero-stat">
             <strong id="heroCount">0</strong>
             <span>Cocteles en la carta</span>
           </div>
-          <div class="hero-stat">
-            <strong>QR listo</strong>
-            <span>Escanea y abre la carta en segundos</span>
+            <a class="button secondary" href="/a">Administrador</a>
           </div>
         </div>
       </section>
 
-      <section class="filters">
-        <div class="filters-grid">
+      <section class="filters is-collapsed">
+        <button id="filtersToggle" class="filters-toggle" type="button" aria-expanded="false" aria-controls="filtersPanel">
+          <span>Filtros</span>
+          <span class="filters-toggle-icon" aria-hidden="true">+</span>
+        </button>
+        <div id="filtersPanel" class="filters-grid hidden">
           <label>
             Buscar por ingrediente
             <input id="ingredientFilter" placeholder="tequila, menta, gin..." />
@@ -101,6 +101,6 @@
       <section id="cocktailGrid" class="menu-list"></section>
       <p class="footer-note">QR fijo sugerido: apunta siempre a `/m`.</p>
     </main>
-    <script src="/static/menu.js?v=20260719b"></script>
+    <script src="/static/menu.js?v=20260719c"></script>
   </body>
 </html>
