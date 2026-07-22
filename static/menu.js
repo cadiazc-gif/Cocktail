@@ -114,7 +114,7 @@ function glassGaugeIcon(pct) {
   const h = ((pct / 100) * (bowlBottom - bowlTop)).toFixed(2);
   const y = (bowlBottom - h).toFixed(2);
   return `
-    <svg class="gauge-icon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+    <svg class="gauge-icon" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
       <defs><clipPath id="clip-a-${uid}"><rect x="2" y="${y}" width="20" height="${h}" /></clipPath></defs>
       <path d="M3 4H21L12 15Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" opacity="0.5" />
       <path d="M3 4H21L12 15Z" fill="currentColor" clip-path="url(#clip-a-${uid})" />
@@ -130,7 +130,7 @@ function hourglassGaugeIcon(pct) {
   const h = ((pct / 100) * (bulbBottom - bulbTop)).toFixed(2);
   const y = (bulbBottom - h).toFixed(2);
   return `
-    <svg class="gauge-icon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+    <svg class="gauge-icon" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
       <defs><clipPath id="clip-t-${uid}"><rect x="2" y="${y}" width="20" height="${h}" /></clipPath></defs>
       <path d="M5 3H19M5 21H19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.5" />
       <path d="M5 3L19 3L12 12L19 21L5 21L12 12Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" opacity="0.5" />
