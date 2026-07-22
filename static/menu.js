@@ -75,6 +75,82 @@ function star(cocktail) {
   return cocktail.is_favorite ? `<span class="favorite-star" title="Favorito">&#9733;</span>` : "";
 }
 
+let iconUid = 0;
+
+function starRating(rating) {
+  const safeRating = Math.max(0, Math.min(5, rating || 0));
+  const pct = (safeRating / 5) * 100;
+  return `
+    <span class="star-rating" title="${safeRating.toFixed(1)} / 5">
+      <span class="star-row star-row-bg">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+      <span class="star-row star-row-fg" style="width:${pct.toFixed(1)}%">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+    </span>
+  `;
+}
+
+const ALCOHOL_LEVELS = {
+  "Sin alcohol": 0,
+  "Suave": 25,
+  "Medio": 50,
+  "Fuerte": 100,
+};
+
+function alcoholPct(level) {
+  return level in ALCOHOL_LEVELS ? ALCOHOL_LEVELS[level] : 50;
+}
+
+function timePct(minutes) {
+  const m = minutes || 0;
+  if (m <= 3) return 25;
+  if (m <= 6) return 50;
+  if (m <= 12) return 75;
+  return 100;
+}
+
+function glassGaugeIcon(pct) {
+  const uid = ++iconUid;
+  const bowlTop = 4;
+  const bowlBottom = 15;
+  const h = ((pct / 100) * (bowlBottom - bowlTop)).toFixed(2);
+  const y = (bowlBottom - h).toFixed(2);
+  return `
+    <svg class="gauge-icon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+      <defs><clipPath id="clip-a-${uid}"><rect x="2" y="${y}" width="20" height="${h}" /></clipPath></defs>
+      <path d="M3 4H21L12 15Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" opacity="0.5" />
+      <path d="M3 4H21L12 15Z" fill="currentColor" clip-path="url(#clip-a-${uid})" />
+      <path d="M12 15V20M8 20.5H16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.5" />
+    </svg>
+  `;
+}
+
+function hourglassGaugeIcon(pct) {
+  const uid = ++iconUid;
+  const bulbTop = 12;
+  const bulbBottom = 21;
+  const h = ((pct / 100) * (bulbBottom - bulbTop)).toFixed(2);
+  const y = (bulbBottom - h).toFixed(2);
+  return `
+    <svg class="gauge-icon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+      <defs><clipPath id="clip-t-${uid}"><rect x="2" y="${y}" width="20" height="${h}" /></clipPath></defs>
+      <path d="M5 3H19M5 21H19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.5" />
+      <path d="M5 3L19 3L12 12L19 21L5 21L12 12Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" opacity="0.5" />
+      <path d="M12 12L19 21L5 21Z" fill="currentColor" clip-path="url(#clip-t-${uid})" />
+    </svg>
+  `;
+}
+
+function metaStrip(cocktail) {
+  const alcoholLabel = cocktail.alcohol_level || "Medio";
+  const minutes = cocktail.prep_time_minutes || 0;
+  return `
+    <div class="meta-strip">
+      ${starRating(cocktail.rating)}
+      <span class="gauge-item alcohol-gauge" title="Alcohol: ${alcoholLabel}">${glassGaugeIcon(alcoholPct(alcoholLabel))}</span>
+      <span class="gauge-item time-gauge" title="Preparación: ${minutes} min">${hourglassGaugeIcon(timePct(minutes))}</span>
+    </div>
+  `;
+}
+
 function cardTemplate(cocktail) {
   const ingredientsSummary = summaryIngredients(cocktail);
   const tags = cocktail.tags.map((tag) => `<span class="tag">${tag}</span>`).join("");
@@ -84,8 +160,6 @@ function cardTemplate(cocktail) {
   const steps = cocktail.steps.length
     ? cocktail.steps.map((step) => `<div class="detail-line"><strong>${step.step_number}.</strong> ${step.instruction}</div>`).join("")
     : `<div class="detail-line muted">Sin pasos cargados.</div>`;
-  const alcoholLabel = cocktail.alcohol_level || "Medio";
-  const prepLabel = `${cocktail.prep_time_minutes || 0} min`;
 
   return `
     <article class="menu-card" data-cocktail-card>
@@ -95,7 +169,7 @@ function cardTemplate(cocktail) {
           <div class="menu-summary-top">
             <div>
               <h3>${cocktail.name} ${star(cocktail)}</h3>
-              <p class="menu-rating">${cocktail.rating.toFixed(1)} / 5</p>
+              ${metaStrip(cocktail)}
             </div>
           </div>
           <p class="menu-ingredients"><strong>Ingredientes:</strong> ${ingredientsSummary}</p>
@@ -107,13 +181,7 @@ function cardTemplate(cocktail) {
           <div class="menu-expanded-info">
             <h2 data-toggle-card tabindex="0">${cocktail.name} ${star(cocktail)}</h2>
             <p>${cocktail.description}</p>
-            <div class="meta-row">
-              <span class="pill">Favorito: ${cocktail.is_favorite ? "Si" : "No"}</span>
-              <span class="pill">Rating: ${cocktail.rating.toFixed(1)} / 5</span>
-              <span class="pill">Alcohol: ${alcoholLabel}</span>
-              <span class="pill">Vaso: ${cocktail.glassware || "No especificado"}</span>
-              <span class="pill">Preparación: ${prepLabel}</span>
-            </div>
+            ${metaStrip(cocktail)}
             <div class="meta-row">${sourceBlock(cocktail)}</div>
             <div class="tag-row">${tags}</div>
           </div>
