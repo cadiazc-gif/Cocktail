@@ -488,12 +488,29 @@ label { display: block; font-size: 0.92rem; margin-bottom: 10px; }
 .menu-list {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 14px;
+  gap: 16px;
   margin-top: 24px;
+  position: relative;
+  padding: 18px 14px;
+  border-radius: 26px;
+}
+.menu-list::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle, rgba(199, 150, 67, 0.55) 0 1.6px, transparent 2px) 0 0/42px 42px,
+    radial-gradient(circle, rgba(199, 150, 67, 0.55) 0 1.6px, transparent 2px) 21px 21px/42px 42px,
+    repeating-linear-gradient(45deg, rgba(154, 47, 61, 0.16) 0 2px, transparent 2px 42px),
+    repeating-linear-gradient(-45deg, rgba(35, 93, 104, 0.14) 0 2px, transparent 2px 42px),
+    linear-gradient(160deg, rgba(20, 17, 15, 0.05), rgba(199, 150, 67, 0.07));
+  border: 1px solid rgba(199, 150, 67, 0.22);
 }
 .menu-card {
-  background: linear-gradient(180deg, rgba(255, 253, 249, 0.94) 0%, rgba(247, 240, 230, 0.94) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: linear-gradient(180deg, rgba(255, 253, 249, 0.97) 0%, rgba(248, 241, 231, 0.97) 100%);
+  border: 1px solid rgba(199, 150, 67, 0.3);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: var(--shadow-soft);
@@ -546,16 +563,22 @@ label { display: block; font-size: 0.92rem; margin-bottom: 10px; }
   color: var(--gold);
 }
 .menu-expanded {
-  padding: 0 16px 16px;
+  position: relative;
+  padding: 16px;
+}
+.menu-expanded::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    repeating-linear-gradient(45deg, rgba(199, 150, 67, 0.12) 0 2px, transparent 2px 30px),
+    repeating-linear-gradient(-45deg, rgba(154, 47, 61, 0.09) 0 2px, transparent 2px 30px),
+    linear-gradient(180deg, rgba(20, 17, 15, 0.035), transparent 40%);
 }
 .menu-expanded p {
   color: var(--muted);
   line-height: 1.6;
-}
-.menu-expanded .details {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px dashed rgba(71, 47, 27, 0.18);
 }
 .menu-card.expanded {
   border-color: rgba(154, 47, 61, 0.3);
@@ -569,6 +592,22 @@ label { display: block; font-size: 0.92rem; margin-bottom: 10px; }
   grid-template-columns: minmax(220px, 320px) 1fr;
   gap: 18px;
   align-items: start;
+  position: relative;
+  padding: 16px 16px 16px 22px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(247, 240, 230, 0.88));
+  border: 1px solid rgba(199, 150, 67, 0.28);
+  box-shadow: var(--shadow-soft);
+}
+.menu-expanded-head::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 4px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--brand), var(--gold));
 }
 .menu-expanded-image {
   width: 100%;
@@ -576,6 +615,7 @@ label { display: block; font-size: 0.92rem; margin-bottom: 10px; }
   object-fit: cover;
   border-radius: 18px;
   box-shadow: 0 14px 30px rgba(47, 27, 16, 0.12);
+  border: 1px solid rgba(199, 150, 67, 0.35);
   cursor: pointer;
 }
 .menu-expanded-info h2 {
@@ -583,6 +623,49 @@ label { display: block; font-size: 0.92rem; margin-bottom: 10px; }
   font-size: 2rem;
   cursor: pointer;
 }
+.menu-expanded .details {
+  position: relative;
+  margin-top: 14px;
+  padding: 14px 16px 14px 22px;
+  border-radius: 16px;
+  background: rgba(255, 253, 248, 0.94);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+}
+.menu-expanded .details::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 4px;
+  border-radius: 4px;
+  background: var(--brand);
+}
+.details-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.details-icon {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.menu-expanded .details-glass::before { background: var(--teal); }
+.details-glass .details-header { color: var(--teal); }
+.menu-expanded .details-ingredients::before { background: var(--gold); }
+.details-ingredients .details-header { color: #8a6112; }
+.menu-expanded .details-steps::before { background: var(--brand); }
+.details-steps .details-header { color: var(--brand); }
 .detail-list {
   display: grid;
   gap: 8px;

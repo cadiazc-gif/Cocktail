@@ -118,18 +118,18 @@ function cardTemplate(cocktail) {
             <div class="tag-row">${tags}</div>
           </div>
         </div>
-        <div class="details">
-          <strong>Vaso o copa</strong>
+        <div class="details details-glass">
+          <div class="details-header"><span class="details-icon"></span>Vaso o copa</div>
           <div class="detail-list">
             <div class="detail-line">${cocktail.glassware || "Vaso/copa no especificado"}</div>
           </div>
         </div>
-        <div class="details">
-          <strong>Ingredientes con cantidades</strong>
+        <div class="details details-ingredients">
+          <div class="details-header"><span class="details-icon"></span>Ingredientes con cantidades</div>
           <div class="detail-list">${detailIngredients}</div>
         </div>
-        <div class="details">
-          <strong>Preparacion</strong>
+        <div class="details details-steps">
+          <div class="details-header"><span class="details-icon"></span>Preparación</div>
           <div class="detail-list">${steps}</div>
         </div>
       </div>
