@@ -1,6 +1,7 @@
 const grid = document.getElementById("cocktailGrid");
 const filtersToggle = document.getElementById("filtersToggle");
 const filtersPanel = document.getElementById("filtersPanel");
+const globalSearch = document.getElementById("globalSearch");
 const ingredientFilter = document.getElementById("ingredientFilter");
 const tagSearchInput = document.getElementById("tagSearchInput");
 const tagFilterButton = document.getElementById("tagFilterButton");
@@ -20,6 +21,27 @@ let availableTags = [];
 let availableGlassware = [];
 let selectedTag = "";
 let selectedGlass = "";
+let lastFetchedCocktails = [];
+
+function normalizeText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "");
+}
+
+function cocktailSearchHaystack(cocktail) {
+  if (!cocktail._searchHaystack) {
+    const ingredientNames = cocktail.requirements
+      .flatMap((requirement) => requirement.options.map((option) => option.name))
+      .join(" ");
+    const stepsText = cocktail.steps.map((step) => step.instruction).join(" ");
+    cocktail._searchHaystack = normalizeText(
+      [cocktail.name, cocktail.description, ingredientNames, (cocktail.tags || []).join(" "), cocktail.glassware, stepsText].join(" ")
+    );
+  }
+  return cocktail._searchHaystack;
+}
 
 function summaryIngredients(cocktail) {
   return cocktail.requirements
@@ -240,7 +262,7 @@ function renderTagPicker(cocktails = null) {
     selectedTag = value;
     tagFilterButton.textContent = selectedTag || "Todos los tags";
     tagFilterPanel.classList.add("hidden");
-    loadCocktails();
+    applyFiltersAndRender();
   });
 }
 
@@ -257,7 +279,7 @@ function renderGlassPicker(cocktails = null) {
     selectedGlass = value;
     glassFilterButton.textContent = selectedGlass || "Todos los vasos";
     glassFilterPanel.classList.add("hidden");
-    loadCocktails();
+    applyFiltersAndRender();
   });
 }
 
@@ -269,29 +291,26 @@ async function loadLists() {
     data.lists.map((item) => `<option value="${item.id}">${item.name}</option>`).join("");
 }
 
-async function loadCocktails() {
-  const params = new URLSearchParams({
-    ingredient: ingredientFilter.value.trim(),
-    alcohol: alcoholFilter.value,
-    list_id: listFilter.value,
-  });
-
-  const response = await fetch(`/api/public/cocktails?${params.toString()}`);
-  const data = await response.json();
-  renderTagPicker(data.cocktails);
-  renderGlassPicker(data.cocktails);
-  const items = data.cocktails.filter((cocktail) => {
+function applyFiltersAndRender() {
+  const query = normalizeText(globalSearch.value.trim());
+  const items = lastFetchedCocktails.filter((cocktail) => {
     if (selectedTag && !(cocktail.tags || []).includes(selectedTag)) return false;
     if (selectedGlass && cocktail.glassware !== selectedGlass) return false;
     if (favoriteOnly && !cocktail.is_favorite) return false;
-    if (ratingFilter.value === "0") return Number(cocktail.rating || 0) === 0;
-    if (ratingFilter.value !== "all" && ratingFilter.value !== "0" && Number(cocktail.rating || 0) < Number(ratingFilter.value)) return false;
+    if (ratingFilter.value === "0") {
+      if (Number(cocktail.rating || 0) !== 0) return false;
+    } else if (ratingFilter.value !== "all" && Number(cocktail.rating || 0) < Number(ratingFilter.value)) {
+      return false;
+    }
+    if (query && !cocktailSearchHaystack(cocktail).includes(query)) return false;
     return true;
   });
   items.sort((left, right) => {
     if (sortFilter.value === "alpha-asc") {
       return left.name.localeCompare(right.name, "es", { sensitivity: "base" });
     }
+    const favoriteDiff = Number(right.is_favorite) - Number(left.is_favorite);
+    if (favoriteDiff !== 0) return favoriteDiff;
     const ratingDiff = Number(right.rating || 0) - Number(left.rating || 0);
     if (ratingDiff !== 0) return ratingDiff;
     return left.name.localeCompare(right.name, "es", { sensitivity: "base" });
@@ -302,6 +321,21 @@ async function loadCocktails() {
     return;
   }
   grid.innerHTML = items.map(cardTemplate).join("");
+}
+
+async function loadCocktails() {
+  const params = new URLSearchParams({
+    ingredient: ingredientFilter.value.trim(),
+    alcohol: alcoholFilter.value,
+    list_id: listFilter.value,
+  });
+
+  const response = await fetch(`/api/public/cocktails?${params.toString()}`);
+  const data = await response.json();
+  lastFetchedCocktails = data.cocktails;
+  renderTagPicker(data.cocktails);
+  renderGlassPicker(data.cocktails);
+  applyFiltersAndRender();
 }
 
 grid.addEventListener("click", (event) => {
@@ -337,13 +371,15 @@ grid.addEventListener("keydown", (event) => {
 });
 
 ingredientFilter.addEventListener("input", loadCocktails);
+globalSearch.addEventListener("input", applyFiltersAndRender);
 tagSearchInput.addEventListener("input", () => renderTagPicker());
 glassSearchInput.addEventListener("input", () => renderGlassPicker());
-[alcoholFilter, listFilter, ratingFilter, sortFilter].forEach((input) => input.addEventListener("change", loadCocktails));
+[alcoholFilter, listFilter].forEach((input) => input.addEventListener("change", loadCocktails));
+[ratingFilter, sortFilter].forEach((input) => input.addEventListener("change", applyFiltersAndRender));
 favoriteFilter.addEventListener("click", () => {
   favoriteOnly = !favoriteOnly;
   renderFavoriteToggle();
-  loadCocktails();
+  applyFiltersAndRender();
 });
 filtersToggle.addEventListener("click", () => {
   const isExpanded = filtersToggle.getAttribute("aria-expanded") === "true";

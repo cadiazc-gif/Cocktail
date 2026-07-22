@@ -46,6 +46,30 @@ La forma mas simple para dejar la carta accesible desde fuera de tu red es despl
 - Administracion corta: `/a`
 - Healthcheck: `/healthz`
 
+## Persistencia en produccion (obligatorio en Render plan free)
+
+El plan free de Render **no tiene disco persistente**: cuando el servicio queda inactivo unos minutos,
+Render lo duerme y al despertar levanta un contenedor nuevo desde el ultimo deploy, perdiendo cualquier
+cambio hecho en `data/store.json` en tiempo real (favoritos, ratings, inventario, cocteles nuevos desde el
+admin, etc.). Por eso los cambios "se deshacian" despues de un rato.
+
+La app soporta guardar el estado en **Upstash Redis** (capa gratuita permanente) en vez del disco local.
+Si las variables de entorno de Upstash no estan configuradas, sigue funcionando exactamente igual que antes
+(solo `data/store.json` local) — asi que esto no rompe el uso local para desarrollo.
+
+### Configurarlo (una sola vez)
+
+1. Crea una cuenta gratis en [upstash.com](https://upstash.com) (no pide tarjeta).
+2. Crea una base de datos Redis nueva (cualquier region cercana a donde este tu servicio de Render).
+3. En el dashboard de esa base, entra a la pestaña **REST API** y copia dos valores:
+   - `UPSTASH_REDIS_REST_URL`
+   - `UPSTASH_REDIS_REST_TOKEN`
+4. En Render, entra a tu servicio &rarr; pestaña **Environment** &rarr; agrega esas dos variables con esos valores.
+5. Guarda: Render va a redesplegar solo. En el primer arranque con esas variables presentes, la app copia
+   automaticamente todo lo que hoy esta en `data/store.json` (el catalogo completo) hacia Upstash, asi que
+   no se pierde nada en la migracion. De ahi en adelante, todo cambio hecho desde el admin queda guardado
+   en Upstash y sobrevive a que Render duerma y despierte el servicio.
+
 ## Prueba publica con Cloudflare
 
 Para probar la carta desde fuera de tu red sin desplegarla aun:
@@ -126,4 +150,4 @@ Limitaciones actuales:
 - La alta rapida del panel crea la ficha inicial del coctel; el detalle completo de ingredientes, reemplazos, pasos y tags hoy se edita en `data/store.json`
 - El servidor escucha en toda la red local, asi que otros celulares en el mismo Wi-Fi pueden entrar usando `http://TU-IP-LOCAL:8000/m`
 - Para un QR mas pequeno conviene usar la ruta raiz `/`; si despues publicas esto en un dominio corto, el QR quedara aun mas simple
-- Si despliegas en internet, `data/store.json` vivira dentro del servidor de despliegue; para una siguiente etapa conviene migrar a una base de datos administrada
+- Si despliegas en Render con el plan free, configura Upstash Redis (ver seccion "Persistencia en produccion" arriba) o los cambios del admin se perderan cuando el servicio duerma

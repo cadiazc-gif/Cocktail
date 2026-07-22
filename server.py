@@ -2,7 +2,10 @@ import hashlib
 import json
 import os
 import socket
+import threading
 import time
+import urllib.error
+import urllib.request
 from http import cookies
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -19,6 +22,11 @@ DEFAULT_ADMIN_PASSWORD = "admin123"
 SESSION_COOKIE = "cocktail_admin_session"
 SESSION_TTL_SECONDS = 60 * 60 * 12
 SESSIONS = {}
+UPSTASH_REDIS_REST_URL = os.environ.get("UPSTASH_REDIS_REST_URL", "").rstrip("/")
+UPSTASH_REDIS_REST_TOKEN = os.environ.get("UPSTASH_REDIS_REST_TOKEN", "")
+UPSTASH_STORE_KEY = "cocktail_bar_store"
+_STORE_LOCK = threading.Lock()
+_STORE_CACHE = None
 DEFAULT_UNITS_CATALOG = [
     "oz",
     "ml",
@@ -164,15 +172,41 @@ def default_store():
     }
 
 
+def upstash_enabled():
+    return bool(UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN)
+
+
+def _upstash_request(path, method="GET", body=None):
+    request = urllib.request.Request(
+        f"{UPSTASH_REDIS_REST_URL}/{path}",
+        data=body,
+        method=method,
+        headers={"Authorization": f"Bearer {UPSTASH_REDIS_REST_TOKEN}"},
+    )
+    with urllib.request.urlopen(request, timeout=15) as response:
+        return json.loads(response.read().decode("utf-8"))
+
+
+def _upstash_get_store_text():
+    return _upstash_request(f"get/{UPSTASH_STORE_KEY}").get("result")
+
+
+def _upstash_set_store_text(raw_text):
+    _upstash_request(f"set/{UPSTASH_STORE_KEY}", method="POST", body=raw_text.encode("utf-8"))
+
+
 def initialize_store():
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     if not STORE_PATH.exists():
-        save_store(default_store())
+        STORE_PATH.write_text(json.dumps(default_store(), ensure_ascii=True, indent=2), encoding="utf-8")
 
 
-def load_store():
+def _read_local_store():
     initialize_store()
-    store = json.loads(STORE_PATH.read_text(encoding="utf-8"))
+    return json.loads(STORE_PATH.read_text(encoding="utf-8"))
+
+
+def _normalize_store(store):
     settings = store.setdefault("settings", {})
     settings.setdefault("admin_password_hash", hash_password(DEFAULT_ADMIN_PASSWORD))
     settings["units_catalog"] = sorted(dict.fromkeys([*DEFAULT_UNITS_CATALOG, *(settings.get("units_catalog") or [])]), key=str.lower)
@@ -184,9 +218,50 @@ def load_store():
     return store
 
 
+def load_store():
+    global _STORE_CACHE
+    with _STORE_LOCK:
+        if _STORE_CACHE is not None:
+            return _STORE_CACHE
+        if upstash_enabled():
+            try:
+                raw = _upstash_get_store_text()
+            except (urllib.error.URLError, OSError, ValueError) as exc:
+                # Upstash unreachable right now: keep the site working off the
+                # local fallback for this process instead of hard-failing every
+                # request. Nothing new is persisted until Upstash is reachable
+                # again and save_store() succeeds.
+                print(f"[store] Upstash unreachable on load, using local fallback: {exc}")
+                store = _read_local_store()
+            else:
+                if raw:
+                    store = json.loads(raw)
+                else:
+                    # First run with Upstash configured and nothing stored yet:
+                    # seed it from whatever is on disk (the catalog shipped in
+                    # the repo) so the migration doesn't lose existing data.
+                    store = _read_local_store()
+                    try:
+                        _upstash_set_store_text(json.dumps(store, ensure_ascii=True))
+                    except (urllib.error.URLError, OSError, ValueError) as exc:
+                        print(f"[store] Could not seed Upstash: {exc}")
+        else:
+            store = _read_local_store()
+        store = _normalize_store(store)
+        _STORE_CACHE = store
+        return store
+
+
 def save_store(store):
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    STORE_PATH.write_text(json.dumps(store, ensure_ascii=True, indent=2), encoding="utf-8")
+    global _STORE_CACHE
+    with _STORE_LOCK:
+        if upstash_enabled():
+            # Let failures raise: a save that silently doesn't reach the only
+            # durable copy should surface as an error, not disappear quietly.
+            _upstash_set_store_text(json.dumps(store, ensure_ascii=True))
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+        STORE_PATH.write_text(json.dumps(store, ensure_ascii=True, indent=2), encoding="utf-8")
+        _STORE_CACHE = store
 
 
 def ingredient_map(store):

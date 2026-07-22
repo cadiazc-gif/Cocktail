@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Carta del Bar</title>
-    <link rel="stylesheet" href="/static/styles.css?v=20260722a" />
+    <link rel="stylesheet" href="/static/styles.css?v=20260722b" />
   </head>
   <body>
     <main class="page-shell">
@@ -29,10 +29,14 @@
       </section>
 
       <section class="filters is-collapsed">
-        <button id="filtersToggle" class="filters-toggle" type="button" aria-expanded="false" aria-controls="filtersPanel">
-          <span>Filtros</span>
-          <span class="filters-toggle-icon" aria-hidden="true">+</span>
-        </button>
+        <div class="filters-bar">
+          <button id="filtersToggle" class="filters-toggle" type="button" aria-expanded="false" aria-controls="filtersPanel">
+            <span>Filtros</span>
+            <span class="filters-toggle-icon" aria-hidden="true">+</span>
+          </button>
+          <input id="globalSearch" class="filters-search" type="search" placeholder="Buscar cóctel, ingrediente, tag, vaso..." aria-label="Buscar en la carta" />
+          <button id="favoriteFilter" class="chip star-filter" type="button" aria-pressed="false" title="Solo favoritos">&#9734;</button>
+        </div>
         <div id="filtersPanel" class="filters-grid hidden">
           <label>
             Buscar por ingrediente
@@ -75,11 +79,7 @@
             </select>
           </label>
           <label>
-            Favoritos
-            <button id="favoriteFilter" class="chip star-filter" type="button" aria-pressed="false" title="Filtrar favoritos">&#9734;</button>
-          </label>
-          <label>
-            Nota
+            Rating
             <select id="ratingFilter">
               <option value="all">Todas</option>
               <option value="0">Sin probar (0)</option>
@@ -91,7 +91,7 @@
           <label>
             Ordenar
             <select id="sortFilter">
-              <option value="rating-desc">Mejor nota</option>
+              <option value="rating-desc">Mejor Rating</option>
               <option value="alpha-asc">Abecedario A-Z</option>
             </select>
           </label>
@@ -101,6 +101,6 @@
       <section id="cocktailGrid" class="menu-list"></section>
       <p class="footer-note">QR fijo sugerido: apunta siempre a `/m`.</p>
     </main>
-    <script src="/static/menu.js?v=20260722a"></script>
+    <script src="/static/menu.js?v=20260722b"></script>
   </body>
 </html>
