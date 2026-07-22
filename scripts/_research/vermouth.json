@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Vermut con Soda",
+    "description": "El aperitivo latinoamericano por excelencia: vermut rojo bien frio con soda y mucho hielo, servido con una cascara de naranja. Simple, refrescante y perfecto antes de una comida.",
+    "image_url": "https://recetasdecocteles.net/wp-content/uploads/2025/03/Vermut-con-Soda.jpg",
+    "glassware": "Vaso bajo",
+    "prep_time_minutes": 2,
+    "alcohol_level": "Suave",
+    "requirements": [
+      {"amount": "3", "unit": "oz", "optional": false, "options": ["Vermut rojo", "Vermut"]},
+      {"amount": "2", "unit": "oz", "optional": false, "options": ["Soda"]},
+      {"amount": "al gusto", "unit": "", "optional": false, "options": ["Hielo"]},
+      {"amount": "1", "unit": "twist", "optional": true, "options": ["Cascara de naranja"]}
+    ],
+    "steps": [
+      "Llenar un vaso bajo con abundante hielo.",
+      "Verter el vermut rojo y completar con soda bien fria, dejando que las burbujas se integren suavemente.",
+      "Decorar con un twist de cascara de naranja y servir de inmediato."
+    ],
+    "tags": ["aperitivo", "vino", "clasico", "rapido"],
+    "source_provider": "Recetas de Cocteles",
+    "source_url": "https://recetasdecocteles.net/vermut-con-soda/"
+  },
+  {
+    "name": "Vermut Tonic",
+    "description": "Version moderna y de moda del aperitivo con vermut: vermut seco alargado con agua tonica sobre hielo, con un twist de limon. Ligero, herbal y muy facil de tomar.",
+    "image_url": "https://punchdrink.com/wp-content/uploads/2014/09/Article-Vermouth-Tonic-Low-ABV-Cocktail-Recipe.jpg?w=800",
+    "glassware": "Copa balón",
+    "prep_time_minutes": 2,
+    "alcohol_level": "Suave",
+    "requirements": [
+      {"amount": "1.5", "unit": "oz", "optional": false, "options": ["Vermut seco"]},
+      {"amount": "3", "unit": "oz", "optional": false, "options": ["Agua tonica"]},
+      {"amount": "al gusto", "unit": "", "optional": false, "options": ["Hielo"]},
+      {"amount": "1", "unit": "twist", "optional": true, "options": ["Cascara de limon"]}
+    ],
+    "steps": [
+      "Llenar una copa balón con abundante hielo.",
+      "Agregar el vermut seco y completar con agua tonica bien fria.",
+      "Remover suavemente con una cuchara bar y decorar con un twist de cascara de limon."
+    ],
+    "tags": ["aperitivo", "vino", "moderno", "refrescante"],
+    "source_provider": "PUNCH",
+    "source_url": "https://punchdrink.com/recipes/vermouth-tonic/"
+  },
+  {
+    "name": "Bamboo",
+    "description": "Clasico de fines del siglo XIX creado por Louis Eppinger: partes iguales de vermut seco y manzanilla (en reemplazo del jerez fino), con un toque de bitter. Se adapta usando bitter Araucano en lugar del bitter de naranja o angostura original, segun el stock disponible.",
+    "image_url": "https://cdn.diffordsguide.com/cocktail/Ov8bBA/default/0/512x.webp?v=1737701573",
+    "glassware": "Copa coupe",
+    "prep_time_minutes": 3,
+    "alcohol_level": "Medio",
+    "requirements": [
+      {"amount": "1.5", "unit": "oz", "optional": false, "options": ["Vermut seco"]},
+      {"amount": "1.5", "unit": "oz", "optional": false, "options": ["Manzanilla"]},
+      {"amount": "2", "unit": "dash", "optional": false, "options": ["Araucano"]},
+      {"amount": "al gusto", "unit": "", "optional": false, "options": ["Hielo"]},
+      {"amount": "1", "unit": "twist", "optional": true, "options": ["Cascara de naranja"]}
+    ],
+    "steps": [
+      "Agregar el vermut seco, la manzanilla y los dashes de Araucano en un vaso mezclador con hielo.",
+      "Remover con cuchara bar por 20-30 segundos hasta enfriar bien la mezcla.",
+      "Colar hacia una copa coupe fria y decorar con un twist de cascara de naranja."
+    ],
+    "tags": ["clasico", "vino", "aperitivo", "jerez"],
+    "source_provider": "Difford's Guide",
+    "source_url": "https://www.diffordsguide.com/cocktails/recipe/3388/bamboo-diffords-perfect-recipe"
+  },
+  {
+    "name": "Reverse Manhattan",
+    "description": "Un Manhattan invertido: predomina el vermut dulce con solo un toque de whisky, ideal como aperitivo de menor graduacion. Se adapta usando bitter Araucano en lugar de angostura, segun el stock disponible.",
+    "image_url": "https://cdn.diffordsguide.com/cocktail/RZe5YO/default/0/512x.webp?v=1737701603",
+    "glassware": "Copa coupe",
+    "prep_time_minutes": 3,
+    "alcohol_level": "Medio",
+    "requirements": [
+      {"amount": "2", "unit": "oz", "optional": false, "options": ["Vermut rojo", "Vermut dulce"]},
+      {"amount": "1", "unit": "oz", "optional": false, "options": ["Whisky", "Whiskey Bourbon"]},
+      {"amount": "2", "unit": "dash", "optional": false, "options": ["Araucano"]},
+      {"amount": "al gusto", "unit": "", "optional": false, "options": ["Hielo"]},
+      {"amount": "1", "unit": "twist", "optional": true, "options": ["Cascara de naranja"]}
+    ],
+    "steps": [
+      "Agregar el vermut dulce, el whisky y los dashes de Araucano en un vaso mezclador con hielo.",
+      "Remover bien hasta enfriar y diluir ligeramente la mezcla.",
+      "Colar hacia una copa coupe fria y decorar con un twist de cascara de naranja."
+    ],
+    "tags": ["clasico", "vino", "moderno"],
+    "source_provider": "Difford's Guide",
+    "source_url": "https://www.diffordsguide.com/cocktails/recipe/5169/reverse-manhattan"
+  }
+]

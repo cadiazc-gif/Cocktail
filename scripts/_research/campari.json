@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Campari Tonic",
+    "description": "Un aperitivo italiano sencillo y refrescante donde el amargor herbal del Campari se equilibra con las burbujas y el toque citrico del agua tonica. Ideal para abrir el apetito antes de comer.",
+    "image_url": "https://agratefulmeal.com/wp-content/uploads/2023/06/campari-tonic-cocktail-featured.jpg",
+    "glassware": "Vaso highball",
+    "prep_time_minutes": 3,
+    "alcohol_level": "Suave",
+    "requirements": [
+      {"amount": "1 1/2", "unit": "oz", "optional": false, "options": ["Campari"]},
+      {"amount": "4", "unit": "oz", "optional": false, "options": ["Agua tonica"]},
+      {"amount": "al gusto", "unit": "", "optional": false, "options": ["Hielo"]},
+      {"amount": "1", "unit": "twist", "optional": true, "options": ["Cascara de naranja"]}
+    ],
+    "steps": [
+      "Llena un vaso highball con hielo hasta el borde.",
+      "Vierte el Campari sobre el hielo.",
+      "Completa con agua tonica y remueve suavemente.",
+      "Exprime un twist de cascara de naranja sobre la copa y decora."
+    ],
+    "tags": ["aperitivo", "campari", "italiano", "refrescante", "rapido"],
+    "source_provider": "A Grateful Meal",
+    "source_url": "https://agratefulmeal.com/campari-tonic/"
+  },
+  {
+    "name": "Campari Gin Tonic",
+    "description": "Un highball moderno que fusiona el Negroni con el clasico Gin Tonic: partes iguales de Campari y Gin coronadas con agua tonica, para un trago mas largo, burbujeante y menos dulce que el Negroni original. Tambien conocido como Milanese G&T, creado en las oficinas de Campari en Londres.",
+    "image_url": "https://cdn.diffordsguide.com/cocktail/O7W6ZO/default/0/512x.webp?v=1737701596",
+    "glassware": "Vaso highball",
+    "prep_time_minutes": 3,
+    "alcohol_level": "Medio",
+    "requirements": [
+      {"amount": "1", "unit": "oz", "optional": false, "options": ["Campari"]},
+      {"amount": "1", "unit": "oz", "optional": false, "options": ["Gin"]},
+      {"amount": "4", "unit": "oz", "optional": false, "options": ["Agua tonica"]},
+      {"amount": "al gusto", "unit": "", "optional": false, "options": ["Hielo"]},
+      {"amount": "1", "unit": "rodaja", "optional": true, "options": ["Naranja"]}
+    ],
+    "steps": [
+      "Llena un vaso highball con hielo.",
+      "Agrega el Campari y el Gin.",
+      "Completa con agua tonica y remueve brevemente.",
+      "Decora con una rodaja de naranja."
+    ],
+    "tags": ["campari", "gin", "moderno", "italiano", "refrescante"],
+    "source_provider": "Difford's Guide",
+    "source_url": "https://www.diffordsguide.com/cocktails/recipe/4071/milanese-gandt"
+  },
+  {
+    "name": "Campari Soda",
+    "description": "El aperitivo italiano clasico por excelencia: Campari con soda bien fria, servido con hielo y un toque de naranja. Simple, burbujeante y con el amargor caracteristico del Campari.",
+    "image_url": "https://agratefulmeal.com/wp-content/uploads/2023/02/campari-soda-cocktail-featured.jpg",
+    "glassware": "Vaso highball",
+    "prep_time_minutes": 2,
+    "alcohol_level": "Suave",
+    "requirements": [
+      {"amount": "2", "unit": "oz", "optional": false, "options": ["Campari"]},
+      {"amount": "4", "unit": "oz", "optional": false, "options": ["Soda"]},
+      {"amount": "al gusto", "unit": "", "optional": false, "options": ["Hielo"]},
+      {"amount": "1", "unit": "rodaja", "optional": true, "options": ["Naranja"]}
+    ],
+    "steps": [
+      "Llena un vaso highball con hielo.",
+      "Vierte el Campari sobre el hielo.",
+      "Completa con soda y remueve suavemente de arriba a abajo.",
+      "Decora con una rodaja de naranja."
+    ],
+    "tags": ["aperitivo", "campari", "italiano", "clasico", "rapido"],
+    "source_provider": "A Grateful Meal",
+    "source_url": "https://agratefulmeal.com/campari-soda/"
+  }
+]

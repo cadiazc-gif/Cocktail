@@ -1,0 +1,75 @@
+[
+  {
+    "name": "Hanky Panky",
+    "description": "Clasico creado en 1903 por Ada Coleman en el American Bar del Savoy de Londres para el actor Charles Hawtrey. Combina gin y vermut dulce en partes iguales con un toque de Fernet que le da su caracteristico final amargo.",
+    "image_url": "https://punchdrink.com/wp-content/uploads/2021/10/Article-Fernet-Branca-Cocktail-Recipe-Hanky-Panky.jpg?w=800",
+    "glassware": "Copa coupe",
+    "prep_time_minutes": 4,
+    "alcohol_level": "Fuerte",
+    "requirements": [
+      {"amount": "1", "unit": "oz", "optional": false, "options": ["Gin"]},
+      {"amount": "1", "unit": "oz", "optional": false, "options": ["Vermut dulce"]},
+      {"amount": "1/4", "unit": "oz", "optional": false, "options": ["Fernet"]},
+      {"amount": "al gusto", "unit": "", "optional": false, "options": ["Hielo"]},
+      {"amount": "1", "unit": "twist", "optional": true, "options": ["Cascara de naranja"]}
+    ],
+    "steps": [
+      "Enfriar previamente una copa coupe.",
+      "Verter el gin, el vermut dulce y el Fernet en una jarra mezcladora con hielo.",
+      "Remover (no agitar) durante 20-30 segundos hasta enfriar bien.",
+      "Colar hacia la copa coupe fria y expresar un twist de cascara de naranja sobre el trago."
+    ],
+    "tags": ["amargo", "clasico", "gin", "ingles"],
+    "source_provider": "Punch",
+    "source_url": "https://punchdrink.com/recipes/hanky-panky/"
+  },
+  {
+    "name": "Toronto",
+    "description": "Variante del Old Fashioned con whisky, propia de la cocteleria clasica canadiense, donde una pequena cantidad de Fernet aporta amargor herbal. Se prepara con amargo Araucano como sustituto del angostura tradicional.",
+    "image_url": "https://cdn.diffordsguide.com/cocktail/OXMKER/default/0/512x.webp?v=1737701576",
+    "glassware": "Vaso old fashioned",
+    "prep_time_minutes": 4,
+    "alcohol_level": "Fuerte",
+    "requirements": [
+      {"amount": "2", "unit": "oz", "optional": false, "options": ["Whisky", "Whiskey Bourbon"]},
+      {"amount": "1/4", "unit": "oz", "optional": false, "options": ["Fernet"]},
+      {"amount": "1/4", "unit": "oz", "optional": false, "options": ["Jarabe simple"]},
+      {"amount": "2", "unit": "dash", "optional": false, "options": ["Araucano"]},
+      {"amount": "al gusto", "unit": "", "optional": false, "options": ["Hielo"]},
+      {"amount": "1", "unit": "twist", "optional": true, "options": ["Cascara de naranja"]}
+    ],
+    "steps": [
+      "En una jarra mezcladora con hielo, agregar el whisky, el Fernet, el jarabe simple y los dashes de amargo Araucano.",
+      "Remover bien durante 20-30 segundos hasta enfriar.",
+      "Colar en un vaso old fashioned sobre un cubo de hielo grande.",
+      "Expresar un twist de cascara de naranja sobre el trago y usarlo como decoracion."
+    ],
+    "tags": ["amargo", "clasico", "old-fashioned"],
+    "source_provider": "Difford's Guide",
+    "source_url": "https://www.diffordsguide.com/cocktails/recipe/3442/toronto-cocktail"
+  },
+  {
+    "name": "Fernet Ginger",
+    "description": "Version mas suave y refrescante del clasico fernet con cola, muy popular como alternativa al fernet con coca: Fernet con ginger ale y un toque de lima, servido largo con hielo.",
+    "image_url": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjMpCME7FkIsqiCw8PLUlr5LuOo31gJ56SPqQlLKD1Khlg1_5vS83Ryg8AXggK82YlQms_1kUOyP0iTTFko59rMeD46iNWpQD12l5GBDyKAbqRyDY-19w7xLGsRTCFT43YfPFYG8GXNwmY/s1600/Branca+Ginger+Ale.jpg",
+    "glassware": "Vaso highball",
+    "prep_time_minutes": 2,
+    "alcohol_level": "Suave",
+    "requirements": [
+      {"amount": "2", "unit": "oz", "optional": false, "options": ["Fernet"]},
+      {"amount": "1", "unit": "splash", "optional": false, "options": ["Jugo de lima"]},
+      {"amount": "top", "unit": "", "optional": false, "options": ["Ginger ale"]},
+      {"amount": "al gusto", "unit": "", "optional": false, "options": ["Hielo"]},
+      {"amount": "1", "unit": "twist", "optional": true, "options": ["Cascara de naranja"]}
+    ],
+    "steps": [
+      "Llenar un vaso highball con hielo.",
+      "Agregar el Fernet y un splash de jugo de lima.",
+      "Completar con ginger ale y mezclar suavemente con una cuchara bailarina para conservar la efervescencia.",
+      "Decorar con un twist de cascara de naranja."
+    ],
+    "tags": ["refrescante", "highball", "amargo", "argentino"],
+    "source_provider": "Tragos y Copas",
+    "source_url": "https://www.tragos-copas.com/2018/06/branca-ginger-ale.html"
+  }
+]

@@ -1,0 +1,98 @@
+[
+  {
+    "name": "Southside",
+    "description": "Clasico de gin de la epoca de la Prohibicion, refrescante y herbal gracias a la menta muddled, con el equilibrio citrico de la lima y un toque dulce de jarabe simple.",
+    "image_url": "https://www.inspiredtaste.net/wp-content/uploads/2012/10/Southside-Cocktail-Recipe-1200.jpg",
+    "glassware": "Copa de coctel",
+    "prep_time_minutes": 4,
+    "alcohol_level": "Medio",
+    "requirements": [
+      {"amount": "8", "unit": "hojas", "optional": false, "options": ["Menta"]},
+      {"amount": "2", "unit": "oz", "optional": false, "options": ["Gin"]},
+      {"amount": "1", "unit": "oz", "optional": false, "options": ["Jugo de lima"]},
+      {"amount": "1", "unit": "oz", "optional": false, "options": ["Jarabe simple"]},
+      {"amount": "al gusto", "unit": "", "optional": false, "options": ["Hielo"]}
+    ],
+    "steps": [
+      "Colocar las hojas de menta en la coctelera y machacarlas suavemente (muddle) solo para liberar su aroma, sin triturarlas del todo.",
+      "Agregar el gin, el jugo de lima y el jarabe simple junto con hielo abundante.",
+      "Agitar con fuerza hasta que la coctelera este bien fria y colar dos veces (double strain) hacia una copa de coctel previamente enfriada.",
+      "Decorar con una hoja de menta fresca."
+    ],
+    "tags": ["citrico", "clasico", "gin", "refrescante", "menta"],
+    "source_provider": "Diffords Guide",
+    "source_url": "https://www.diffordsguide.com/cocktails/recipe/2200/southside"
+  },
+  {
+    "name": "Bee's Knees",
+    "description": "Coctel clasico de la epoca de la Prohibicion creado para disimular el sabor del gin casero, con el dulzor floral de la miel y la acidez fresca del limon.",
+    "image_url": "https://cookieandkate.com/images/2020/04/bees-knees-drink.jpg",
+    "glassware": "Copa de coctel",
+    "prep_time_minutes": 3,
+    "alcohol_level": "Medio",
+    "requirements": [
+      {"amount": "2", "unit": "oz", "optional": false, "options": ["Gin"]},
+      {"amount": "3/4", "unit": "oz", "optional": false, "options": ["Jugo de limon"]},
+      {"amount": "3/4", "unit": "oz", "optional": false, "options": ["Miel"]},
+      {"amount": "al gusto", "unit": "", "optional": false, "options": ["Hielo"]},
+      {"amount": "1", "unit": "twist", "optional": false, "options": ["Cascara de limon"]}
+    ],
+    "steps": [
+      "Llenar la coctelera con hielo y agregar el gin, el jugo de limon recien exprimido y la miel.",
+      "Agitar vigorosamente por unos 15 segundos hasta que este bien frio.",
+      "Colar hacia una copa de coctel previamente enfriada.",
+      "Decorar con un twist de cascara de limon."
+    ],
+    "tags": ["citrico", "clasico", "gin", "prohibicion", "miel"],
+    "source_provider": "Cookie and Kate",
+    "source_url": "https://cookieandkate.com/bees-knees-cocktail-recipe/"
+  },
+  {
+    "name": "Pisco Punch",
+    "description": "El legendario coctel de pisco creado por Duncan Nicol en el San Francisco del siglo XIX, con notas tropicales de pina y un toque citrico refrescante.",
+    "image_url": "https://vinepair.com/wp-content/uploads/2022/10/pisco-punch-card-375x450.jpg",
+    "glassware": "Vaso old fashioned",
+    "prep_time_minutes": 4,
+    "alcohol_level": "Medio",
+    "requirements": [
+      {"amount": "2", "unit": "oz", "optional": false, "options": ["Pisco"]},
+      {"amount": "3/4", "unit": "oz", "optional": false, "options": ["Jugo de piña"]},
+      {"amount": "3/4", "unit": "oz", "optional": false, "options": ["Jugo de lima"]},
+      {"amount": "1/2", "unit": "oz", "optional": false, "options": ["Jarabe simple"]},
+      {"amount": "al gusto", "unit": "", "optional": false, "options": ["Hielo"]}
+    ],
+    "steps": [
+      "Agregar el pisco, el jugo de piña, el jugo de lima y el jarabe simple a la coctelera con hielo.",
+      "Agitar con fuerza hasta enfriar bien la mezcla.",
+      "Colar hacia un vaso old fashioned con hielo (o servir colado en copa fria).",
+      "Servir bien frio, sin decoracion adicional."
+    ],
+    "tags": ["pisco", "frutal", "clasico", "estadounidense", "tropical"],
+    "source_provider": "VinePair",
+    "source_url": "https://vinepair.com/cocktail-recipe/pisco-punch/"
+  },
+  {
+    "name": "Ramazzotti Spritz",
+    "description": "Version italiana del clasico spritz que reemplaza el Aperol por el amaro Ramazzotti, resultando en un trago mas oscuro, herbal y ligeramente amargo, ideal como aperitivo.",
+    "image_url": "https://images.squarespace-cdn.com/content/v1/62503525c8ea875b7ae0638e/1719243928872-5A3FL42A4DRVYC1PJX3X/Ramazzotti+Spritz.jpg",
+    "glassware": "Copa balón",
+    "prep_time_minutes": 3,
+    "alcohol_level": "Suave",
+    "requirements": [
+      {"amount": "al gusto", "unit": "", "optional": false, "options": ["Hielo"]},
+      {"amount": "2", "unit": "oz", "optional": false, "options": ["Ramazzotti"]},
+      {"amount": "3", "unit": "oz", "optional": false, "options": ["Prosecco"]},
+      {"amount": "1", "unit": "oz", "optional": false, "options": ["Soda"]},
+      {"amount": "1", "unit": "rodaja", "optional": false, "options": ["Naranja"]}
+    ],
+    "steps": [
+      "Llenar una copa balón con hielo abundante.",
+      "Agregar el Ramazzotti y el Prosecco.",
+      "Completar con un chorro de soda y remover suavemente para integrar.",
+      "Decorar con una rodaja de naranja."
+    ],
+    "tags": ["aperitivo", "espumante", "italiano", "amargo", "refrescante"],
+    "source_provider": "Grouchy Bartender",
+    "source_url": "https://www.grouchy-bartender.com/cocktails/ramazzotti-spritz"
+  }
+]
