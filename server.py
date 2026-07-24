@@ -378,23 +378,38 @@ def apply_cocktail_content_fields(cocktail, fields, store):
     cocktail["prep_time_minutes"] = int(fields.get("prep_time_minutes", 5))
     cocktail["alcohol_level"] = normalize_alcohol_level(fields.get("alcohol_level"), fields.get("alcohol_level") != "Sin alcohol")
     cocktail["glassware"] = (fields.get("glassware") or "").strip()
-    cocktail["instructions"] = fields.get("instructions", "")
+    if "instructions" in fields:
+        cocktail["instructions"] = fields.get("instructions", "")
     cocktail["tags"] = [tag.strip() for tag in fields.get("tags", []) if tag.strip()]
     cocktail["steps"] = [{"step_number": index + 1, "instruction": step.strip()} for index, step in enumerate(fields.get("steps", [])) if step.strip()]
     cocktail["requirements"] = requirements
-    source = cocktail.get("source") or {}
-    source["provider"] = (fields.get("source_provider") or source.get("provider") or "").strip()
-    source["source_url"] = (fields.get("source_url") or source.get("source_url") or "").strip()
-    cocktail["source"] = source
+    # Source/instructions aren't something guests can propose (not shown on the
+    # public suggestion form) — only touch them when the caller actually sent
+    # them, so an accepted suggestion never silently blanks out the admin's
+    # existing source attribution.
+    if "source_provider" in fields or "source_url" in fields:
+        source = cocktail.get("source") or {}
+        source["provider"] = (fields.get("source_provider") or source.get("provider") or "").strip()
+        source["source_url"] = (fields.get("source_url") or source.get("source_url") or "").strip()
+        cocktail["source"] = source
 
 
 def recompute_rating(cocktail):
     admin_rating = cocktail.get("admin_rating", cocktail.get("rating", 0))
     count = cocktail.get("guest_rating_count", 0)
-    if count:
-        cocktail["rating"] = (admin_rating + cocktail.get("guest_rating_sum", 0.0)) / (1 + count)
-    else:
+    if not count:
         cocktail["rating"] = admin_rating
+        return
+    guest_sum = cocktail.get("guest_rating_sum", 0.0)
+    if admin_rating:
+        # Admin has an actual rating on record: it counts as one more "vote"
+        # anchoring the blend.
+        cocktail["rating"] = (admin_rating + guest_sum) / (1 + count)
+    else:
+        # rating 0 means "nobody has rated this yet" (same convention as the
+        # admin's "Sin probar (0)" filter) — it's an empty slot, not a real
+        # zero score, so don't let it drag down the guests' own average.
+        cocktail["rating"] = guest_sum / count
 
 
 def apply_admin_rating_if_changed(cocktail, new_rating_value):
@@ -834,6 +849,10 @@ class CocktailHandler(BaseHTTPRequestHandler):
                 "submitted_at": now_iso(),
                 "submitted_by": (body.get("submitted_by") or "").strip(),
                 "status": "pending",
+                # Only fields the public form actually shows — deliberately
+                # omits instructions/source_provider/source_url, which guests
+                # never see, so apply_cocktail_content_fields() leaves those
+                # untouched on the cocktail when this suggestion is accepted.
                 "proposed": {
                     "name": (body.get("name") or "").strip(),
                     "description": body.get("description", ""),
@@ -841,11 +860,8 @@ class CocktailHandler(BaseHTTPRequestHandler):
                     "prep_time_minutes": body.get("prep_time_minutes", 5),
                     "alcohol_level": body.get("alcohol_level", ""),
                     "glassware": body.get("glassware", ""),
-                    "instructions": body.get("instructions", ""),
                     "tags": body.get("tags", []),
                     "steps": body.get("steps", []),
-                    "source_provider": body.get("source_provider", ""),
-                    "source_url": body.get("source_url", ""),
                     "requirements": body.get("requirements", []),
                 },
             }

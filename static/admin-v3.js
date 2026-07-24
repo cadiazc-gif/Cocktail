@@ -458,9 +458,10 @@ function suggestionDiffRows(suggestion, cocktail) {
     cocktail.steps.map((step) => step.instruction).join(" / "),
     (proposed.steps || []).map((step) => (step || "").trim()).filter(Boolean).join(" / "),
   );
-  const source = cocktail.source || {};
-  compare("Fuente", source.provider, proposed.source_provider);
-  compare("Link fuente", source.source_url, proposed.source_url);
+  // Fuente / link fuente / instructions are not on the public suggestion
+  // form, so they're intentionally left out of both the diff and the
+  // proposed payload — comparing them here would always show a false
+  // "cleared" change.
   const currentRequirements = cocktail.requirements
     .map((requirement) => `${requirement.amount || ""} ${requirement.unit || ""} ${requirement.options.map((option) => option.name).join(" o ")}${requirement.optional ? " (opcional)" : ""}`.trim())
     .join(" | ");
