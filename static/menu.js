@@ -184,7 +184,7 @@ function cardTemplate(cocktail) {
     : `<div class="detail-line muted">Sin pasos cargados.</div>`;
 
   return `
-    <article class="menu-card" data-cocktail-card>
+    <article class="menu-card${cocktail.is_available ? "" : " menu-card-unavailable"}" data-cocktail-card>
       <button class="menu-summary" type="button" data-toggle-card>
         <img class="menu-thumb" src="${cocktail.image_url}" alt="${cocktail.name}" />
         <div class="menu-summary-content">
@@ -306,6 +306,8 @@ function applyFiltersAndRender() {
     return true;
   });
   items.sort((left, right) => {
+    const availabilityDiff = Number(right.is_available) - Number(left.is_available);
+    if (availabilityDiff !== 0) return availabilityDiff;
     if (sortFilter.value === "alpha-asc") {
       return left.name.localeCompare(right.name, "es", { sensitivity: "base" });
     }

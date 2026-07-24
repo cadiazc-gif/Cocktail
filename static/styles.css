@@ -535,6 +535,35 @@ label { display: block; font-size: 0.92rem; margin-bottom: 10px; }
   overflow: hidden;
   box-shadow: var(--shadow-soft);
   width: 100%;
+  position: relative;
+}
+.menu-card-unavailable {
+  filter: grayscale(0.85);
+  opacity: 0.62;
+}
+.menu-card-unavailable::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(45deg, rgba(20, 17, 15, 0.08) 0px, rgba(20, 17, 15, 0.08) 8px, transparent 8px, transparent 16px);
+  pointer-events: none;
+  z-index: 2;
+}
+.menu-card-unavailable::after {
+  content: "No disponible";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(35, 25, 20, 0.85);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  z-index: 3;
+  pointer-events: none;
 }
 .menu-summary {
   width: 100%;

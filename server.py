@@ -470,7 +470,7 @@ def infer_glassware_from_text(cocktail):
     return ""
 
 
-def cocktail_payload(store, public_only=False):
+def cocktail_payload(store):
     ingredients = ingredient_map(store)
     cocktails = []
     for cocktail in sorted(store["cocktails"], key=lambda item: item["name"]):
@@ -515,8 +515,6 @@ def cocktail_payload(store, public_only=False):
             if not available:
                 is_available = False
             requirements.append({"group_key": requirement["group_key"], "amount": requirement["amount"], "unit": requirement["unit"], "optional": requirement["optional"], "options": options, "selected_options": selected_options, "available": available})
-        if public_only and not is_available:
-            continue
         payload = dict(cocktail)
         payload["glassware"] = cocktail.get("glassware") or infer_glassware_from_text(cocktail)
         payload["requirements"] = requirements
@@ -526,7 +524,7 @@ def cocktail_payload(store, public_only=False):
 
 
 def filtered_public_payload(store, query):
-    cocktails = cocktail_payload(store, public_only=True)
+    cocktails = cocktail_payload(store)
     ingredient_filter = (query.get("ingredient", [""])[0] or "").strip().lower()
     tag_filter = (query.get("tag", [""])[0] or "").strip().lower()
     alcohol_filter = (query.get("alcohol", ["all"])[0] or "all").strip().lower()
