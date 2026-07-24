@@ -175,6 +175,9 @@ function metaStrip(cocktail) {
 
 function cardTemplate(cocktail) {
   const ingredientsSummary = summaryIngredients(cocktail);
+  const missingLine = cocktail.is_available
+    ? ""
+    : `<p class="menu-missing"><strong>Falta:</strong> ${missingIngredientNames(cocktail).join(", ")}</p>`;
   const tags = cocktail.tags.map((tag) => `<span class="tag">${tag}</span>`).join("");
   const detailIngredients = cocktail.requirements
     .map((requirement) => detailIngredient(requirement))
@@ -195,6 +198,7 @@ function cardTemplate(cocktail) {
             </div>
           </div>
           <p class="menu-ingredients"><strong>Ingredientes:</strong> ${ingredientsSummary}</p>
+          ${missingLine}
         </div>
       </button>
       <div class="menu-expanded hidden" data-expanded>
@@ -236,8 +240,14 @@ function renderFavoriteToggle() {
 function updateHeroCount(cocktails) {
   const heroCount = document.getElementById("heroCount");
   if (heroCount) {
-    heroCount.textContent = cocktails.length;
+    heroCount.textContent = cocktails.filter((cocktail) => cocktail.is_available).length;
   }
+}
+
+function missingIngredientNames(cocktail) {
+  return cocktail.requirements
+    .filter((requirement) => requirementStatus(requirement).key === "missing")
+    .map((requirement) => requirement.options.map((option) => option.name).join(" o "));
 }
 
 function renderPickerOptions(optionsRoot, values, selectedValue, allLabel, selectFn) {

@@ -537,9 +537,16 @@ label { display: block; font-size: 0.92rem; margin-bottom: 10px; }
   width: 100%;
   position: relative;
 }
-.menu-card-unavailable {
+.menu-card-unavailable .menu-thumb,
+.menu-card-unavailable .menu-expanded-image {
   filter: grayscale(0.85);
-  opacity: 0.62;
+  opacity: 0.75;
+}
+.menu-missing {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #8b2b1e;
 }
 .menu-card-unavailable::before {
   content: "";
