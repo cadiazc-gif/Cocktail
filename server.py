@@ -378,6 +378,8 @@ def apply_cocktail_content_fields(cocktail, fields, store):
     cocktail["prep_time_minutes"] = int(fields.get("prep_time_minutes", 5))
     cocktail["alcohol_level"] = normalize_alcohol_level(fields.get("alcohol_level"), fields.get("alcohol_level") != "Sin alcohol")
     cocktail["glassware"] = (fields.get("glassware") or "").strip()
+    if "is_favorite" in fields:
+        cocktail["is_favorite"] = bool(fields.get("is_favorite"))
     if "instructions" in fields:
         cocktail["instructions"] = fields.get("instructions", "")
     cocktail["tags"] = [tag.strip() for tag in fields.get("tags", []) if tag.strip()]
@@ -869,6 +871,25 @@ class CocktailHandler(BaseHTTPRequestHandler):
             save_store(store)
             json_response(self, {"ok": True, "suggestion_id": suggestion["id"]})
             return
+        if path == "/api/public/cocktail-favorite-suggest":
+            cocktail = next((item for item in store["cocktails"] if item["id"] == body.get("cocktail_id")), None)
+            if not cocktail:
+                json_response(self, {"error": "not_found"}, 404)
+                return
+            suggestion = {
+                "id": next_id(store["suggestions"]),
+                "cocktail_id": cocktail["id"],
+                "cocktail_name": cocktail["name"],
+                "submitted_at": now_iso(),
+                "submitted_by": (body.get("submitted_by") or "").strip(),
+                "status": "pending",
+                "kind": "favorite",
+                "proposed": {"is_favorite": bool(body.get("is_favorite"))},
+            }
+            store["suggestions"].append(suggestion)
+            save_store(store)
+            json_response(self, {"ok": True, "suggestion_id": suggestion["id"]})
+            return
         if not is_authenticated(self):
             json_response(self, {"error": "unauthorized"}, 401)
             return
@@ -1051,11 +1072,14 @@ class CocktailHandler(BaseHTTPRequestHandler):
             if not cocktail:
                 json_response(self, {"error": "cocktail_not_found"}, 404)
                 return
-            try:
-                apply_cocktail_content_fields(cocktail, suggestion["proposed"], store)
-            except IngredientNotFoundError as exc:
-                json_response(self, {"error": "ingredient_not_found", "ingredient_name": exc.ingredient_name}, 400)
-                return
+            if suggestion.get("kind") == "favorite":
+                cocktail["is_favorite"] = bool(suggestion["proposed"].get("is_favorite"))
+            else:
+                try:
+                    apply_cocktail_content_fields(cocktail, suggestion["proposed"], store)
+                except IngredientNotFoundError as exc:
+                    json_response(self, {"error": "ingredient_not_found", "ingredient_name": exc.ingredient_name}, 400)
+                    return
             suggestion["status"] = "accepted"
             save_store(store)
             json_response(self, {"ok": True})

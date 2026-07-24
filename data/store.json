@@ -41024,7 +41024,7 @@
       "image_url": "https://imag.bonviveur.com/carajillo.webp",
       "prep_time_minutes": 4,
       "instructions": "",
-      "rating": 4.0,
+      "rating": 4.5,
       "is_favorite": false,
       "is_active": true,
       "tags": [
@@ -41089,8 +41089,8 @@
       "glassware": "Vaso bajo",
       "alcohol_level": "Medio",
       "admin_rating": 4.0,
-      "guest_rating_sum": 0.0,
-      "guest_rating_count": 0
+      "guest_rating_sum": 5.0,
+      "guest_rating_count": 1
     },
     {
       "id": 446,

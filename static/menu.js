@@ -14,6 +14,7 @@ const glassFilterPanel = document.getElementById("glassFilterPanel");
 const glassFilterOptions = document.getElementById("glassFilterOptions");
 const listFilter = document.getElementById("listFilter");
 const favoriteFilter = document.getElementById("favoriteFilter");
+const rouletteButton = document.getElementById("rouletteButton");
 const ratingFilter = document.getElementById("ratingFilter");
 const sortFilter = document.getElementById("sortFilter");
 let favoriteOnly = false;
@@ -22,6 +23,8 @@ let availableGlassware = [];
 let selectedTag = "";
 let selectedGlass = "";
 let lastFetchedCocktails = [];
+let lastVisibleCocktails = [];
+let rouletteSpinning = false;
 
 function normalizeText(value) {
   return String(value || "")
@@ -216,12 +219,34 @@ function clickableStars(cocktail) {
   const stars = [1, 2, 3, 4, 5]
     .map((n) => `<button type="button" class="vote-star ${n <= myVote ? "active" : ""}" data-vote-star="${n}" data-vote-cocktail="${cocktail.id}" aria-label="Calificar con ${n}">&#9733;</button>`)
     .join("");
+  const favoriteTitle = cocktail.is_favorite ? "Proponer quitar de favoritos" : "Proponer como favorito";
   return `
     <div class="vote-row">
       <span class="vote-label">${myVote ? "Tu voto:" : "Calificar:"}</span>
       <span class="vote-stars">${stars}</span>
+      <button type="button" class="favorite-toggle-btn ${cocktail.is_favorite ? "active" : ""}" data-favorite-toggle="${cocktail.id}" aria-label="${favoriteTitle}" title="${favoriteTitle}">${cocktail.is_favorite ? "&#9733;" : "&#9734;"}</button>
     </div>
   `;
+}
+
+async function proposeFavoriteToggle(cocktailId, button) {
+  const cocktail = lastFetchedCocktails.find((item) => item.id === cocktailId);
+  if (!cocktail) return;
+  const desired = !cocktail.is_favorite;
+  button.disabled = true;
+  try {
+    const response = await fetch("/api/public/cocktail-favorite-suggest", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cocktail_id: cocktailId, is_favorite: desired, submitted_by: getGuestName() }),
+    });
+    if (!response.ok) throw new Error("request_failed");
+    showToast(desired ? "Propuesta enviada: marcar como favorito." : "Propuesta enviada: quitar de favoritos.");
+  } catch (err) {
+    showToast("No se pudo enviar la propuesta.");
+  } finally {
+    button.disabled = false;
+  }
 }
 
 async function castVote(cocktailId, rating) {
@@ -519,11 +544,70 @@ function applyFiltersAndRender() {
     return left.name.localeCompare(right.name, "es", { sensitivity: "base" });
   });
   updateHeroCount(items);
+  lastVisibleCocktails = items;
   if (!items.length) {
     grid.innerHTML = `<div class="empty">No hay cocteles disponibles con esos filtros hoy.</div>`;
     return;
   }
   grid.innerHTML = items.map(cardTemplate).join("");
+}
+
+function openCardById(cocktailId) {
+  const card = grid.querySelector(`[data-cocktail-card][data-id="${cocktailId}"]`);
+  if (!card) return;
+  grid.querySelectorAll("[data-cocktail-card]").forEach((item) => {
+    item.classList.remove("expanded");
+    const detail = item.querySelector("[data-expanded]");
+    if (detail) detail.classList.add("hidden");
+  });
+  const expanded = card.querySelector("[data-expanded]");
+  expanded.classList.remove("hidden");
+  card.classList.add("expanded");
+  card.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function runRoulette() {
+  if (rouletteSpinning) return;
+  const candidates = lastVisibleCocktails.filter((cocktail) => cocktail.is_available);
+  const cards = candidates
+    .map((cocktail) => grid.querySelector(`[data-cocktail-card][data-id="${cocktail.id}"]`))
+    .filter(Boolean);
+  if (!cards.length) {
+    showToast("No hay cocteles disponibles con estos filtros para sortear.");
+    return;
+  }
+  grid.querySelectorAll(".roulette-winner").forEach((item) => item.classList.remove("roulette-winner"));
+  rouletteSpinning = true;
+  rouletteButton.disabled = true;
+  rouletteButton.classList.add("spinning");
+  const targetIndex = Math.floor(Math.random() * cards.length);
+  const totalDurationMs = 3200 + Math.random() * 1500;
+  const startTime = performance.now();
+  let highlighted = null;
+  const highlight = (card) => {
+    if (highlighted && highlighted !== card) highlighted.classList.remove("roulette-active");
+    highlighted = card;
+    highlighted.classList.add("roulette-active");
+  };
+  let idx = Math.floor(Math.random() * cards.length);
+  const tick = () => {
+    const elapsedRatio = Math.min(1, (performance.now() - startTime) / totalDurationMs);
+    if (elapsedRatio >= 1) {
+      highlight(cards[targetIndex]);
+      highlighted.classList.remove("roulette-active");
+      highlighted.classList.add("roulette-winner");
+      highlighted.scrollIntoView({ behavior: "smooth", block: "center" });
+      rouletteButton.disabled = false;
+      rouletteButton.classList.remove("spinning");
+      rouletteSpinning = false;
+      return;
+    }
+    idx = (idx + 1) % cards.length;
+    highlight(cards[idx]);
+    const delay = 35 + 220 * Math.pow(elapsedRatio, 2);
+    setTimeout(tick, delay);
+  };
+  tick();
 }
 
 async function loadCocktails() {
@@ -554,21 +638,17 @@ grid.addEventListener("click", (event) => {
     return;
   }
 
-  grid.querySelectorAll("[data-cocktail-card]").forEach((item) => {
-    item.classList.remove("expanded");
-    const detail = item.querySelector("[data-expanded]");
-    if (detail) detail.classList.add("hidden");
-  });
-
-  if (willOpen) {
-    expanded.classList.remove("hidden");
-    card.classList.add("expanded");
-  }
+  openCardById(card.dataset.id);
 });
 grid.addEventListener("click", (event) => {
   const voteBtn = event.target.closest("[data-vote-star]");
   if (voteBtn) {
     castVote(Number(voteBtn.dataset.voteCocktail), Number(voteBtn.dataset.voteStar));
+    return;
+  }
+  const favoriteBtn = event.target.closest("[data-favorite-toggle]");
+  if (favoriteBtn) {
+    proposeFavoriteToggle(Number(favoriteBtn.dataset.favoriteToggle), favoriteBtn);
     return;
   }
   const suggestBtn = event.target.closest("[data-suggest-change]");
@@ -596,6 +676,7 @@ favoriteFilter.addEventListener("click", () => {
   renderFavoriteToggle();
   applyFiltersAndRender();
 });
+rouletteButton.addEventListener("click", runRoulette);
 filtersToggle.addEventListener("click", () => {
   const isExpanded = filtersToggle.getAttribute("aria-expanded") === "true";
   filtersToggle.setAttribute("aria-expanded", isExpanded ? "false" : "true");

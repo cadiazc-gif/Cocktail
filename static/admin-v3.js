@@ -481,7 +481,16 @@ function renderSuggestions(data) {
   suggestionsList.innerHTML = pending
     .map((suggestion) => {
       const cocktail = data.cocktails.find((item) => item.id === suggestion.cocktail_id);
-      const rows = suggestionDiffRows(suggestion, cocktail);
+      const rows =
+        suggestion.kind === "favorite"
+          ? [
+              {
+                field: "Favorito",
+                before: cocktail && cocktail.is_favorite ? "Si" : "No",
+                after: suggestion.proposed.is_favorite ? "Si" : "No",
+              },
+            ]
+          : suggestionDiffRows(suggestion, cocktail);
       const diffHtml = rows.length
         ? rows
             .map(
