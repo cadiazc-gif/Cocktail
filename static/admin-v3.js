@@ -7,6 +7,7 @@ const inventoryList = document.getElementById("inventoryList");
 const shoppingList = document.getElementById("shoppingList");
 const statsGrid = document.getElementById("statsGrid");
 const catalogCocktailGrid = document.getElementById("catalogCocktailGrid");
+const suggestionsList = document.getElementById("suggestionsList");
 const cocktailSearchInput = document.getElementById("cocktailSearchInput");
 const ingredientSearchInput = document.getElementById("ingredientSearchInput");
 const inventoryCategoryFilters = document.getElementById("inventoryCategoryFilters");
@@ -411,7 +412,7 @@ function cocktailEditor(cocktail) {
       return `<span class="summary-token ${status.key}">${escapeHtml(status.label)}</span>`;
     })
     .join("");
-  return `<article class="editor-card ${cocktail.is_available ? "" : "editor-card-unavailable"}" data-editor-card="${cocktail.id}"><button class="editor-summary editor-summary-cocktail" type="button" data-toggle-editor="${cocktail.id}"><img class="editor-thumb" src="${cocktail.image_url || 'https://placehold.co/72x72/f4ead8/7a5c45?text=%20'}" alt="${escapeHtml(cocktail.name)}" /><div class="compact-main"><strong>${cocktail.name}${cocktail.is_favorite ? ' <span class="favorite-star">&#9733;</span>' : ""}</strong><span class="muted">${cocktail.rating.toFixed(1)} / 5 ${cocktail.is_available ? "" : "· no disponible"}</span><div class="summary-token-row">${ingredientSummary}</div></div></button><div class="editor-body hidden" data-editor-body="${cocktail.id}"><div class="form-grid"><label>Nombre <input data-edit-name="${cocktail.id}" value="${escapeHtml(cocktail.name)}" /></label><label>Foto URL <input data-edit-image="${cocktail.id}" value="${escapeHtml(cocktail.image_url || "")}" /></label><label>Preparación (min) <input data-edit-minutes="${cocktail.id}" type="number" value="${cocktail.prep_time_minutes}" /></label><label>Alcohol <select data-edit-alcohol-level="${cocktail.id}"><option value="Fuerte" ${cocktail.alcohol_level === "Fuerte" ? "selected" : ""}>Fuerte</option><option value="Medio" ${cocktail.alcohol_level === "Medio" ? "selected" : ""}>Medio</option><option value="Suave" ${cocktail.alcohol_level === "Suave" ? "selected" : ""}>Suave</option><option value="Sin alcohol" ${cocktail.alcohol_level === "Sin alcohol" ? "selected" : ""}>Sin alcohol</option></select></label></div><label>Descripcion <textarea data-edit-description="${cocktail.id}" rows="2">${escapeHtml(cocktail.description || "")}</textarea></label><div class="form-grid"><label>Tipo de vaso o copa <input data-edit-glassware="${cocktail.id}" value="${escapeHtml(cocktail.glassware || "")}" placeholder="Copa de coctel, vaso highball..." /></label><label>Rating <input data-edit-rating="${cocktail.id}" type="number" min="0" max="5" step="0.1" value="${cocktail.rating}" /></label><label>Tags separados por coma <input data-edit-tags="${cocktail.id}" value="${escapeHtml(cocktail.tags.join(", "))}" /></label><label>Importado desde <input data-edit-source-provider="${cocktail.id}" value="${escapeHtml(source.provider || "")}" /></label><label>Link fuente <input data-edit-source-url="${cocktail.id}" value="${escapeHtml(source.source_url || "")}" /></label></div><div class="compact-toolbar compact-toolbar-2"><label><input data-edit-favorite="${cocktail.id}" type="checkbox" ${cocktail.is_favorite ? "checked" : ""} /> Favorito</label><label><input data-edit-active="${cocktail.id}" type="checkbox" ${cocktail.is_active ? "checked" : ""} /> Activo</label></div><label>Pasos, uno por linea <textarea data-edit-steps="${cocktail.id}" rows="4">${escapeHtml(cocktail.steps.map((item) => item.instruction).join("\n"))}</textarea></label><div class="details"><div class="row-top"><strong>Ingredientes / reemplazos</strong><button class="secondary mini-button" type="button" data-add-requirement="${cocktail.id}">agregar fila</button></div><div class="requirement-stack" data-requirements-stack="${cocktail.id}">${cocktail.requirements.map((requirement, index) => requirementEditor(requirement, index, `edit-${cocktail.id}`)).join("")}</div></div><div class="row-top" style="margin-top:12px"><button data-save-cocktail="${cocktail.id}">Guardar cambios</button><button class="secondary" data-delete-cocktail="${cocktail.id}">Eliminar coctel</button></div></div></article>`;
+  return `<article class="editor-card ${cocktail.is_available ? "" : "editor-card-unavailable"}" data-editor-card="${cocktail.id}"><button class="editor-summary editor-summary-cocktail" type="button" data-toggle-editor="${cocktail.id}"><img class="editor-thumb" src="${cocktail.image_url || 'https://placehold.co/72x72/f4ead8/7a5c45?text=%20'}" alt="${escapeHtml(cocktail.name)}" /><div class="compact-main"><strong>${cocktail.name}${cocktail.is_favorite ? ' <span class="favorite-star">&#9733;</span>' : ""}</strong><span class="muted">${cocktail.rating.toFixed(1)} / 5 ${cocktail.is_available ? "" : "· no disponible"}</span><div class="summary-token-row">${ingredientSummary}</div></div></button><div class="editor-body hidden" data-editor-body="${cocktail.id}"><div class="form-grid"><label>Nombre <input data-edit-name="${cocktail.id}" value="${escapeHtml(cocktail.name)}" /></label><label>Foto URL <input data-edit-image="${cocktail.id}" value="${escapeHtml(cocktail.image_url || "")}" /></label><label>Preparación (min) <input data-edit-minutes="${cocktail.id}" type="number" value="${cocktail.prep_time_minutes}" /></label><label>Alcohol <select data-edit-alcohol-level="${cocktail.id}"><option value="Fuerte" ${cocktail.alcohol_level === "Fuerte" ? "selected" : ""}>Fuerte</option><option value="Medio" ${cocktail.alcohol_level === "Medio" ? "selected" : ""}>Medio</option><option value="Suave" ${cocktail.alcohol_level === "Suave" ? "selected" : ""}>Suave</option><option value="Sin alcohol" ${cocktail.alcohol_level === "Sin alcohol" ? "selected" : ""}>Sin alcohol</option></select></label></div><label>Descripcion <textarea data-edit-description="${cocktail.id}" rows="2">${escapeHtml(cocktail.description || "")}</textarea></label><div class="form-grid"><label>Tipo de vaso o copa <input data-edit-glassware="${cocktail.id}" value="${escapeHtml(cocktail.glassware || "")}" placeholder="Copa de coctel, vaso highball..." /></label><label>Tu rating (con votos de comensales: ${cocktail.rating.toFixed(1)}, ${cocktail.guest_rating_count || 0} votos) <input data-edit-rating="${cocktail.id}" type="number" min="0" max="5" step="0.1" value="${cocktail.admin_rating}" /></label><label>Tags separados por coma <input data-edit-tags="${cocktail.id}" value="${escapeHtml(cocktail.tags.join(", "))}" /></label><label>Importado desde <input data-edit-source-provider="${cocktail.id}" value="${escapeHtml(source.provider || "")}" /></label><label>Link fuente <input data-edit-source-url="${cocktail.id}" value="${escapeHtml(source.source_url || "")}" /></label></div><div class="compact-toolbar compact-toolbar-2"><label><input data-edit-favorite="${cocktail.id}" type="checkbox" ${cocktail.is_favorite ? "checked" : ""} /> Favorito</label><label><input data-edit-active="${cocktail.id}" type="checkbox" ${cocktail.is_active ? "checked" : ""} /> Activo</label></div><label>Pasos, uno por linea <textarea data-edit-steps="${cocktail.id}" rows="4">${escapeHtml(cocktail.steps.map((item) => item.instruction).join("\n"))}</textarea></label><div class="details"><div class="row-top"><strong>Ingredientes / reemplazos</strong><button class="secondary mini-button" type="button" data-add-requirement="${cocktail.id}">agregar fila</button></div><div class="requirement-stack" data-requirements-stack="${cocktail.id}">${cocktail.requirements.map((requirement, index) => requirementEditor(requirement, index, `edit-${cocktail.id}`)).join("")}</div></div><div class="row-top" style="margin-top:12px"><button data-save-cocktail="${cocktail.id}">Guardar cambios</button><button class="secondary" data-delete-cocktail="${cocktail.id}">Eliminar coctel</button></div></div></article>`;
 }
 
 function renderCatalog(data) {
@@ -434,6 +435,75 @@ function renderCatalog(data) {
     return !query || normalizeText(`${cocktail.name} ${cocktail.tags.join(" ")} ${ingredientNames.join(" ")}`).includes(query);
   });
   catalogCocktailGrid.innerHTML = items.length ? items.map(cocktailEditor).join("") : `<div class="empty">No encontre cocteles con ese filtro.</div>`;
+}
+
+function suggestionDiffRows(suggestion, cocktail) {
+  if (!cocktail) return [{ field: "Coctel", before: "(fue eliminado)", after: "" }];
+  const proposed = suggestion.proposed;
+  const rows = [];
+  const compare = (label, beforeVal, afterVal) => {
+    const before = (beforeVal ?? "").toString().trim();
+    const after = (afterVal ?? "").toString().trim();
+    if (before !== after) rows.push({ field: label, before, after });
+  };
+  compare("Nombre", cocktail.name, proposed.name);
+  compare("Descripcion", cocktail.description, proposed.description);
+  compare("Foto URL", cocktail.image_url, proposed.image_url);
+  compare("Preparacion (min)", cocktail.prep_time_minutes, proposed.prep_time_minutes);
+  compare("Alcohol", cocktail.alcohol_level, proposed.alcohol_level);
+  compare("Vaso/copa", cocktail.glassware, proposed.glassware);
+  compare("Tags", (cocktail.tags || []).join(", "), (proposed.tags || []).join(", "));
+  compare(
+    "Pasos",
+    cocktail.steps.map((step) => step.instruction).join(" / "),
+    (proposed.steps || []).map((step) => (step || "").trim()).filter(Boolean).join(" / "),
+  );
+  const source = cocktail.source || {};
+  compare("Fuente", source.provider, proposed.source_provider);
+  compare("Link fuente", source.source_url, proposed.source_url);
+  const currentRequirements = cocktail.requirements
+    .map((requirement) => `${requirement.amount || ""} ${requirement.unit || ""} ${requirement.options.map((option) => option.name).join(" o ")}${requirement.optional ? " (opcional)" : ""}`.trim())
+    .join(" | ");
+  const proposedRequirements = (proposed.requirements || [])
+    .map((requirement) => `${requirement.amount || ""} ${requirement.unit || ""} ${(requirement.options || []).join(" o ")}${requirement.optional ? " (opcional)" : ""}`.trim())
+    .join(" | ");
+  compare("Ingredientes", currentRequirements, proposedRequirements);
+  return rows;
+}
+
+function renderSuggestions(data) {
+  const pending = (data.suggestions || []).filter((item) => item.status === "pending");
+  if (!pending.length) {
+    suggestionsList.innerHTML = `<div class="empty">No hay propuestas pendientes.</div>`;
+    return;
+  }
+  suggestionsList.innerHTML = pending
+    .map((suggestion) => {
+      const cocktail = data.cocktails.find((item) => item.id === suggestion.cocktail_id);
+      const rows = suggestionDiffRows(suggestion, cocktail);
+      const diffHtml = rows.length
+        ? rows
+            .map(
+              (row) =>
+                `<div class="suggestion-diff-row"><span class="suggestion-diff-field">${escapeHtml(row.field)}:</span> <span class="suggestion-diff-before">${escapeHtml(row.before || "(vacio)")}</span> &rarr; <span class="suggestion-diff-after">${escapeHtml(row.after || "(vacio)")}</span></div>`,
+            )
+            .join("")
+        : `<div class="muted">Sin cambios detectables.</div>`;
+      return `
+        <article class="suggestion-card">
+          <div class="suggestion-meta">
+            <strong>${escapeHtml(suggestion.cocktail_name)}</strong>
+            <span class="muted">${escapeHtml(suggestion.submitted_by || "Anonimo")} &middot; ${escapeHtml(suggestion.submitted_at)}</span>
+          </div>
+          <div class="suggestion-diff">${diffHtml}</div>
+          <div class="row-top">
+            <button data-accept-suggestion="${suggestion.id}">Aprobar</button>
+            <button class="secondary" data-reject-suggestion="${suggestion.id}">Rechazar</button>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
 }
 
 function renderLists(data) {
@@ -461,6 +531,7 @@ async function loadDashboard() {
   renderInventory(dashboardData);
   renderShopping(dashboardData);
   renderCatalog(dashboardData);
+  renderSuggestions(dashboardData);
   renderLists(dashboardData);
   if (!newCocktailRequirements.children.length) {
     newCocktailRequirements.innerHTML = requirementEditor({ amount: "", unit: "", options: [], optional: false }, 1, "new");
@@ -567,8 +638,26 @@ document.addEventListener("click", async (event) => {
   const mergeIngredient = event.target.dataset.mergeIngredient;
   const deleteIngredient = event.target.dataset.deleteIngredient;
   const deleteCocktail = event.target.dataset.deleteCocktail;
+  const acceptSuggestion = event.target.dataset.acceptSuggestion;
+  const rejectSuggestion = event.target.dataset.rejectSuggestion;
 
   if (event.target.matches('input[type="checkbox"]')) return;
+  if (acceptSuggestion) {
+    try {
+      await postJson("/api/admin/suggestions/accept", { suggestion_id: Number(acceptSuggestion) });
+      adminNotice = "Propuesta aprobada y aplicada.";
+    } catch (error) {
+      adminNotice = error.message.includes("ingredient_not_found") ? "La propuesta tiene un ingrediente no valido; revisala manualmente antes de aprobar." : "No pude aprobar la propuesta.";
+    }
+    await loadDashboard();
+    return;
+  }
+  if (rejectSuggestion) {
+    await postJson("/api/admin/suggestions/reject", { suggestion_id: Number(rejectSuggestion) });
+    adminNotice = "Propuesta rechazada.";
+    await loadDashboard();
+    return;
+  }
   if (adminView) {
     adminViewMode = adminView;
     renderStats(dashboardData);

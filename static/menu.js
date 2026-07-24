@@ -173,6 +173,193 @@ function metaStrip(cocktail) {
   `;
 }
 
+function showToast(message) {
+  let root = document.getElementById("publicToastRoot");
+  if (!root) {
+    root = document.createElement("div");
+    root.id = "publicToastRoot";
+    root.className = "public-toast-root";
+    document.body.appendChild(root);
+  }
+  const toast = document.createElement("div");
+  toast.className = "public-toast";
+  toast.textContent = message;
+  root.appendChild(toast);
+  setTimeout(() => toast.remove(), 2600);
+}
+
+function localVotes() {
+  try {
+    return JSON.parse(localStorage.getItem("cocktail_votes") || "{}");
+  } catch (err) {
+    return {};
+  }
+}
+
+function saveLocalVote(cocktailId, rating) {
+  const votes = localVotes();
+  votes[cocktailId] = rating;
+  localStorage.setItem("cocktail_votes", JSON.stringify(votes));
+}
+
+function getGuestName() {
+  return localStorage.getItem("guest_display_name") || "";
+}
+
+function setGuestName(name) {
+  localStorage.setItem("guest_display_name", name || "");
+}
+
+function clickableStars(cocktail) {
+  const votes = localVotes();
+  const myVote = votes[cocktail.id] || 0;
+  const stars = [1, 2, 3, 4, 5]
+    .map((n) => `<button type="button" class="vote-star ${n <= myVote ? "active" : ""}" data-vote-star="${n}" data-vote-cocktail="${cocktail.id}" aria-label="Calificar con ${n}">&#9733;</button>`)
+    .join("");
+  return `
+    <div class="vote-row">
+      <span class="vote-label">${myVote ? "Tu voto:" : "Calificar:"}</span>
+      <span class="vote-stars">${stars}</span>
+    </div>
+  `;
+}
+
+async function castVote(cocktailId, rating) {
+  const votes = localVotes();
+  const previous = votes[cocktailId] || null;
+  const card = grid.querySelector(`[data-cocktail-card][data-id="${cocktailId}"]`);
+  const wasExpanded = card ? card.classList.contains("expanded") : false;
+  try {
+    const response = await fetch("/api/public/cocktail-vote", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cocktail_id: cocktailId, rating, previous_rating: previous }),
+    });
+    if (!response.ok) throw new Error("vote_failed");
+    const data = await response.json();
+    saveLocalVote(cocktailId, rating);
+    const cocktail = lastFetchedCocktails.find((item) => item.id === cocktailId);
+    if (cocktail) cocktail.rating = data.rating;
+    if (cocktail && card) {
+      card.outerHTML = cardTemplate(cocktail);
+      if (wasExpanded) {
+        const newCard = grid.querySelector(`[data-cocktail-card][data-id="${cocktailId}"]`);
+        if (newCard) {
+          newCard.classList.add("expanded");
+          newCard.querySelector("[data-expanded]")?.classList.remove("hidden");
+        }
+      }
+    }
+    showToast("¡Gracias por tu voto!");
+  } catch (err) {
+    showToast("No se pudo registrar tu voto.");
+  }
+}
+
+function requirementEditorRow(requirement, index) {
+  const optionNames = (requirement.options || []).map((option) => (typeof option === "string" ? option : option.name)).filter(Boolean);
+  const rowKey = `sugg-${index}-${Date.now()}`;
+  return `<div class="requirement-editor" data-requirement-row="${rowKey}">
+    <input data-field="amount" value="${requirement.amount || ""}" placeholder="cantidad" />
+    <input data-field="unit" value="${requirement.unit || ""}" placeholder="unidad" />
+    <input data-field="options" value="${optionNames.join(" | ")}" placeholder="ingrediente o reemplazos (separa con |)" />
+    <div class="requirement-actions">
+      <label class="toggle-chip"><input data-field="optional" type="checkbox" ${requirement.optional ? "checked" : ""} /> <span>Opcional</span></label>
+      <button class="secondary mini-button" type="button" data-remove-requirement="${rowKey}">Quitar</button>
+    </div>
+  </div>`;
+}
+
+function collectSuggestRequirementRows(container) {
+  return [...container.querySelectorAll(".requirement-editor")]
+    .map((row) => ({
+      group_key: "",
+      amount: row.querySelector('[data-field="amount"]').value,
+      unit: row.querySelector('[data-field="unit"]').value,
+      options: row.querySelector('[data-field="options"]').value.split("|").map((item) => item.trim()).filter(Boolean),
+      optional: row.querySelector('[data-field="optional"]').checked,
+    }))
+    .filter((row) => row.options.length);
+}
+
+function openSuggestForm(cocktail) {
+  const overlay = document.createElement("div");
+  overlay.className = "public-modal-overlay";
+  overlay.innerHTML = `
+    <div class="public-modal-card">
+      <h2 class="public-modal-title">Proponer cambio: ${cocktail.name}</h2>
+      <div class="public-modal-field"><label>Tu nombre (opcional)</label><input id="suggestName" value="${getGuestName()}" /></div>
+      <div class="public-modal-field"><label>Nombre del cóctel</label><input id="suggestCocktailName" value="${cocktail.name}" /></div>
+      <div class="public-modal-field"><label>Descripción</label><textarea id="suggestDescription" rows="2">${cocktail.description || ""}</textarea></div>
+      <div class="public-modal-field"><label>Foto URL</label><input id="suggestImage" value="${cocktail.image_url || ""}" /></div>
+      <div class="public-modal-field"><label>Preparación (min)</label><input id="suggestMinutes" type="number" value="${cocktail.prep_time_minutes}" /></div>
+      <div class="public-modal-field"><label>Alcohol</label>
+        <select id="suggestAlcohol">
+          ${["Fuerte", "Medio", "Suave", "Sin alcohol"].map((level) => `<option value="${level}" ${cocktail.alcohol_level === level ? "selected" : ""}>${level}</option>`).join("")}
+        </select>
+      </div>
+      <div class="public-modal-field"><label>Vaso o copa</label><input id="suggestGlassware" value="${cocktail.glassware || ""}" /></div>
+      <div class="public-modal-field"><label>Tags separados por coma</label><input id="suggestTags" value="${(cocktail.tags || []).join(", ")}" /></div>
+      <div class="public-modal-field"><label>Pasos, uno por línea</label><textarea id="suggestSteps" rows="4">${(cocktail.steps || []).map((step) => step.instruction).join("\n")}</textarea></div>
+      <div class="details">
+        <div class="row-top">
+          <strong>Ingredientes / reemplazos</strong>
+          <button class="secondary mini-button" type="button" id="suggestAddRequirement">agregar fila</button>
+        </div>
+        <div id="suggestRequirements" class="requirement-stack">
+          ${cocktail.requirements.map((requirement, index) => requirementEditorRow(requirement, index)).join("")}
+        </div>
+      </div>
+      <div class="public-modal-actions">
+        <button class="secondary" id="suggestCancel" type="button">Cancelar</button>
+        <button id="suggestSubmit" type="button">Enviar propuesta</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) overlay.remove();
+    const removeBtn = event.target.closest("[data-remove-requirement]");
+    if (removeBtn) removeBtn.closest(".requirement-editor").remove();
+  });
+  document.getElementById("suggestCancel").addEventListener("click", () => overlay.remove());
+  document.getElementById("suggestAddRequirement").addEventListener("click", () => {
+    document.getElementById("suggestRequirements").insertAdjacentHTML("beforeend", requirementEditorRow({ amount: "", unit: "", options: [], optional: false }, Date.now()));
+  });
+  document.getElementById("suggestSubmit").addEventListener("click", async () => {
+    const name = document.getElementById("suggestName").value.trim();
+    setGuestName(name);
+    const payload = {
+      cocktail_id: cocktail.id,
+      submitted_by: name,
+      name: document.getElementById("suggestCocktailName").value,
+      description: document.getElementById("suggestDescription").value,
+      image_url: document.getElementById("suggestImage").value,
+      prep_time_minutes: Number(document.getElementById("suggestMinutes").value || 5),
+      alcohol_level: document.getElementById("suggestAlcohol").value,
+      glassware: document.getElementById("suggestGlassware").value,
+      tags: document.getElementById("suggestTags").value.split(",").map((tag) => tag.trim()).filter(Boolean),
+      steps: document.getElementById("suggestSteps").value.split("\n"),
+      requirements: collectSuggestRequirementRows(document.getElementById("suggestRequirements")),
+    };
+    try {
+      const response = await fetch("/api/public/cocktail-suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.error || "request_failed");
+      }
+      overlay.remove();
+      showToast("¡Gracias! Tu propuesta quedó pendiente de revisión.");
+    } catch (err) {
+      showToast(err.message === "ingredient_not_found" ? "Hay un ingrediente que no reconozco en la receta." : "No se pudo enviar la propuesta.");
+    }
+  });
+}
+
 function cardTemplate(cocktail) {
   const ingredientsSummary = summaryIngredients(cocktail);
   const missingLine = cocktail.is_available
@@ -187,7 +374,7 @@ function cardTemplate(cocktail) {
     : `<div class="detail-line muted">Sin pasos cargados.</div>`;
 
   return `
-    <article class="menu-card${cocktail.is_available ? "" : " menu-card-unavailable"}" data-cocktail-card>
+    <article class="menu-card${cocktail.is_available ? "" : " menu-card-unavailable"}" data-cocktail-card data-id="${cocktail.id}">
       <button class="menu-summary" type="button" data-toggle-card>
         <img class="menu-thumb" src="${cocktail.image_url}" alt="${cocktail.name}" />
         <div class="menu-summary-content">
@@ -208,6 +395,7 @@ function cardTemplate(cocktail) {
             <h2 data-toggle-card tabindex="0">${cocktail.name} ${star(cocktail)}</h2>
             <p>${cocktail.description}</p>
             ${metaStrip(cocktail)}
+            ${clickableStars(cocktail)}
             <div class="meta-row">${sourceBlock(cocktail)}</div>
             <div class="tag-row">${tags}</div>
           </div>
@@ -225,6 +413,9 @@ function cardTemplate(cocktail) {
         <div class="details details-steps">
           <div class="details-header"><span class="details-icon"></span>Preparación</div>
           <div class="detail-list">${steps}</div>
+        </div>
+        <div class="row-top" style="margin-top:14px">
+          <button class="secondary mini-button" type="button" data-suggest-change="${cocktail.id}">Proponer un cambio</button>
         </div>
       </div>
     </article>
@@ -372,6 +563,18 @@ grid.addEventListener("click", (event) => {
   if (willOpen) {
     expanded.classList.remove("hidden");
     card.classList.add("expanded");
+  }
+});
+grid.addEventListener("click", (event) => {
+  const voteBtn = event.target.closest("[data-vote-star]");
+  if (voteBtn) {
+    castVote(Number(voteBtn.dataset.voteCocktail), Number(voteBtn.dataset.voteStar));
+    return;
+  }
+  const suggestBtn = event.target.closest("[data-suggest-change]");
+  if (suggestBtn) {
+    const cocktail = lastFetchedCocktails.find((item) => item.id === Number(suggestBtn.dataset.suggestChange));
+    if (cocktail) openSuggestForm(cocktail);
   }
 });
 grid.addEventListener("keydown", (event) => {

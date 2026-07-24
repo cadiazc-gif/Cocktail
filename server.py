@@ -210,11 +210,15 @@ def _normalize_store(store):
     settings = store.setdefault("settings", {})
     settings.setdefault("admin_password_hash", hash_password(DEFAULT_ADMIN_PASSWORD))
     settings["units_catalog"] = sorted(dict.fromkeys([*DEFAULT_UNITS_CATALOG, *(settings.get("units_catalog") or [])]), key=str.lower)
+    store.setdefault("suggestions", [])
     for cocktail in store.get("cocktails", []):
         cocktail["alcohol_level"] = normalize_alcohol_level(cocktail.get("alcohol_level") or cocktail.get("strength"), cocktail.get("is_alcoholic", True))
         cocktail.pop("difficulty", None)
         cocktail.pop("strength", None)
         cocktail.pop("is_alcoholic", None)
+        cocktail.setdefault("admin_rating", cocktail.get("rating", 0))
+        cocktail.setdefault("guest_rating_sum", 0.0)
+        cocktail.setdefault("guest_rating_count", 0)
     return store
 
 
@@ -326,6 +330,80 @@ def find_existing_ingredient_id(store, ingredient_name):
 
 def next_id(items):
     return max((item["id"] for item in items), default=0) + 1
+
+
+def now_iso():
+    return time.strftime("%Y-%m-%d %H:%M")
+
+
+class IngredientNotFoundError(Exception):
+    def __init__(self, ingredient_name):
+        super().__init__(ingredient_name)
+        self.ingredient_name = ingredient_name
+
+
+def build_requirements_from_rows(store, rows):
+    requirements = []
+    for index, requirement in enumerate(rows, start=1):
+        options = [option.strip() for option in requirement.get("options", []) if option.strip()]
+        if not options:
+            continue
+        option_ids = []
+        for option in options:
+            ingredient_id = find_existing_ingredient_id(store, option)
+            if ingredient_id is None:
+                raise IngredientNotFoundError(option)
+            option_ids.append(ingredient_id)
+        unit_value = (requirement.get("unit") or "").strip()
+        add_unit_to_catalog(store, unit_value)
+        requirements.append(
+            {
+                "group_key": requirement.get("group_key") or f"group-{index}",
+                "amount": requirement.get("amount", ""),
+                "unit": unit_value,
+                "optional": bool(requirement.get("optional")),
+                "options": option_ids,
+            }
+        )
+    return requirements
+
+
+def apply_cocktail_content_fields(cocktail, fields, store):
+    # Resolve/validate the requirements FIRST so a bad ingredient name aborts
+    # before anything on the live cocktail has been mutated.
+    requirements = build_requirements_from_rows(store, fields.get("requirements", []))
+    cocktail["name"] = (fields.get("name") or cocktail.get("name", "")).strip()
+    cocktail["description"] = fields.get("description", "")
+    cocktail["image_url"] = fields.get("image_url", "")
+    cocktail["prep_time_minutes"] = int(fields.get("prep_time_minutes", 5))
+    cocktail["alcohol_level"] = normalize_alcohol_level(fields.get("alcohol_level"), fields.get("alcohol_level") != "Sin alcohol")
+    cocktail["glassware"] = (fields.get("glassware") or "").strip()
+    cocktail["instructions"] = fields.get("instructions", "")
+    cocktail["tags"] = [tag.strip() for tag in fields.get("tags", []) if tag.strip()]
+    cocktail["steps"] = [{"step_number": index + 1, "instruction": step.strip()} for index, step in enumerate(fields.get("steps", [])) if step.strip()]
+    cocktail["requirements"] = requirements
+    source = cocktail.get("source") or {}
+    source["provider"] = (fields.get("source_provider") or source.get("provider") or "").strip()
+    source["source_url"] = (fields.get("source_url") or source.get("source_url") or "").strip()
+    cocktail["source"] = source
+
+
+def recompute_rating(cocktail):
+    admin_rating = cocktail.get("admin_rating", cocktail.get("rating", 0))
+    count = cocktail.get("guest_rating_count", 0)
+    if count:
+        cocktail["rating"] = (admin_rating + cocktail.get("guest_rating_sum", 0.0)) / (1 + count)
+    else:
+        cocktail["rating"] = admin_rating
+
+
+def apply_admin_rating_if_changed(cocktail, new_rating_value):
+    new_rating_value = float(new_rating_value)
+    if new_rating_value != cocktail.get("admin_rating", cocktail.get("rating", 0)):
+        cocktail["admin_rating"] = new_rating_value
+        cocktail["guest_rating_sum"] = 0.0
+        cocktail["guest_rating_count"] = 0
+    recompute_rating(cocktail)
 
 
 def inventory_state(store, ingredient_id):
@@ -624,6 +702,7 @@ def admin_dashboard(store):
         "lists": public_lists(store),
         "units_catalog": units_catalog(store),
         "ingredient_tag_catalog": sorted({item["category"] for item in ingredients if item.get("category")}, key=str.lower),
+        "suggestions": sorted(store["suggestions"], key=lambda item: item["id"], reverse=True),
     }
 
 
@@ -710,6 +789,69 @@ class CocktailHandler(BaseHTTPRequestHandler):
             self.send_header("Content-Length", str(len(payload)))
             self.end_headers()
             self.wfile.write(payload)
+            return
+        if path == "/api/public/cocktail-vote":
+            cocktail = next((item for item in store["cocktails"] if item["id"] == body.get("cocktail_id")), None)
+            if not cocktail:
+                json_response(self, {"error": "not_found"}, 404)
+                return
+            try:
+                vote = float(body.get("rating"))
+            except (TypeError, ValueError):
+                json_response(self, {"error": "invalid_rating"}, 400)
+                return
+            if not (1 <= vote <= 5):
+                json_response(self, {"error": "invalid_rating"}, 400)
+                return
+            previous = body.get("previous_rating")
+            try:
+                previous = float(previous) if previous is not None else None
+            except (TypeError, ValueError):
+                previous = None
+            if previous is not None:
+                cocktail["guest_rating_sum"] = cocktail.get("guest_rating_sum", 0.0) + (vote - previous)
+            else:
+                cocktail["guest_rating_sum"] = cocktail.get("guest_rating_sum", 0.0) + vote
+                cocktail["guest_rating_count"] = cocktail.get("guest_rating_count", 0) + 1
+            recompute_rating(cocktail)
+            save_store(store)
+            json_response(self, {"ok": True, "rating": cocktail["rating"], "guest_rating_count": cocktail["guest_rating_count"]})
+            return
+        if path == "/api/public/cocktail-suggest":
+            cocktail = next((item for item in store["cocktails"] if item["id"] == body.get("cocktail_id")), None)
+            if not cocktail:
+                json_response(self, {"error": "not_found"}, 404)
+                return
+            try:
+                build_requirements_from_rows(store, body.get("requirements", []))
+            except IngredientNotFoundError as exc:
+                json_response(self, {"error": "ingredient_not_found", "ingredient_name": exc.ingredient_name}, 400)
+                return
+            suggestion = {
+                "id": next_id(store["suggestions"]),
+                "cocktail_id": cocktail["id"],
+                "cocktail_name": cocktail["name"],
+                "submitted_at": now_iso(),
+                "submitted_by": (body.get("submitted_by") or "").strip(),
+                "status": "pending",
+                "proposed": {
+                    "name": (body.get("name") or "").strip(),
+                    "description": body.get("description", ""),
+                    "image_url": body.get("image_url", ""),
+                    "prep_time_minutes": body.get("prep_time_minutes", 5),
+                    "alcohol_level": body.get("alcohol_level", ""),
+                    "glassware": body.get("glassware", ""),
+                    "instructions": body.get("instructions", ""),
+                    "tags": body.get("tags", []),
+                    "steps": body.get("steps", []),
+                    "source_provider": body.get("source_provider", ""),
+                    "source_url": body.get("source_url", ""),
+                    "requirements": body.get("requirements", []),
+                },
+            }
+            store["suggestions"].append(suggestion)
+            save_store(store)
+            json_response(self, {"ok": True, "suggestion_id": suggestion["id"]})
             return
         if not is_authenticated(self):
             json_response(self, {"error": "unauthorized"}, 401)
@@ -834,7 +976,7 @@ class CocktailHandler(BaseHTTPRequestHandler):
             return
         if path == "/api/admin/cocktail-rating":
             cocktail = next(item for item in store["cocktails"] if item["id"] == body["cocktail_id"])
-            cocktail["rating"] = float(body.get("rating", 0))
+            apply_admin_rating_if_changed(cocktail, body.get("rating", 0))
             cocktail["is_favorite"] = bool(body.get("is_favorite"))
             save_store(store)
             json_response(self, {"ok": True})
@@ -850,46 +992,14 @@ class CocktailHandler(BaseHTTPRequestHandler):
             return
         if path == "/api/admin/cocktail-save":
             cocktail = next(item for item in store["cocktails"] if item["id"] == body["cocktail_id"])
-            cocktail["name"] = (body.get("name") or cocktail["name"]).strip()
-            cocktail["description"] = body.get("description", "")
-            cocktail["image_url"] = body.get("image_url", "")
-            cocktail["prep_time_minutes"] = int(body.get("prep_time_minutes", 5))
-            cocktail["alcohol_level"] = normalize_alcohol_level(body.get("alcohol_level"), body.get("alcohol_level") != "Sin alcohol")
-            cocktail["glassware"] = (body.get("glassware") or "").strip()
-            cocktail["instructions"] = body.get("instructions", "")
-            cocktail["rating"] = float(body.get("rating", 0))
+            try:
+                apply_cocktail_content_fields(cocktail, body, store)
+            except IngredientNotFoundError as exc:
+                json_response(self, {"error": "ingredient_not_found", "ingredient_name": exc.ingredient_name}, 400)
+                return
+            apply_admin_rating_if_changed(cocktail, body.get("rating", 0))
             cocktail["is_favorite"] = bool(body.get("is_favorite"))
             cocktail["is_active"] = bool(body.get("is_active", True))
-            cocktail["tags"] = [tag.strip() for tag in body.get("tags", []) if tag.strip()]
-            cocktail["steps"] = [{"step_number": index + 1, "instruction": step.strip()} for index, step in enumerate(body.get("steps", [])) if step.strip()]
-            requirements = []
-            for index, requirement in enumerate(body.get("requirements", []), start=1):
-                options = [option.strip() for option in requirement.get("options", []) if option.strip()]
-                if not options:
-                    continue
-                option_ids = []
-                for option in options:
-                    ingredient_id = find_existing_ingredient_id(store, option)
-                    if ingredient_id is None:
-                        json_response(self, {"error": "ingredient_not_found", "ingredient_name": option}, 400)
-                        return
-                    option_ids.append(ingredient_id)
-                unit_value = (requirement.get("unit") or "").strip()
-                add_unit_to_catalog(store, unit_value)
-                requirements.append(
-                    {
-                        "group_key": requirement.get("group_key") or f"group-{index}",
-                        "amount": requirement.get("amount", ""),
-                        "unit": unit_value,
-                        "optional": bool(requirement.get("optional")),
-                        "options": option_ids,
-                    }
-                )
-            cocktail["requirements"] = requirements
-            source = cocktail.get("source") or {}
-            source["provider"] = (body.get("source_provider") or source.get("provider") or "").strip()
-            source["source_url"] = (body.get("source_url") or source.get("source_url") or "").strip()
-            cocktail["source"] = source
             save_store(store)
             json_response(self, {"ok": True})
             return
@@ -906,30 +1016,40 @@ class CocktailHandler(BaseHTTPRequestHandler):
             if not name:
                 json_response(self, {"error": "name_required"}, 400)
                 return
-            requirements = []
-            for index, requirement in enumerate(body.get("requirements", []), start=1):
-                options = [option.strip() for option in requirement.get("options", []) if option.strip()]
-                if not options:
-                    continue
-                option_ids = []
-                for option in options:
-                    ingredient_id = find_existing_ingredient_id(store, option)
-                    if ingredient_id is None:
-                        json_response(self, {"error": "ingredient_not_found", "ingredient_name": option}, 400)
-                        return
-                    option_ids.append(ingredient_id)
-                unit_value = (requirement.get("unit") or "").strip()
-                add_unit_to_catalog(store, unit_value)
-                requirements.append(
-                    {
-                        "group_key": requirement.get("group_key") or f"group-{index}",
-                        "amount": requirement.get("amount", ""),
-                        "unit": unit_value,
-                        "optional": bool(requirement.get("optional")),
-                        "options": option_ids,
-                    }
-                )
-            store["cocktails"].append({"id": next_id(store["cocktails"]), "name": name, "description": body.get("description", ""), "image_url": body.get("image_url", ""), "prep_time_minutes": int(body.get("prep_time_minutes", 5)), "alcohol_level": normalize_alcohol_level(body.get("alcohol_level"), body.get("alcohol_level") != "Sin alcohol"), "glassware": (body.get("glassware") or "").strip(), "instructions": body.get("instructions", ""), "rating": float(body.get("rating", 0)), "is_favorite": bool(body.get("is_favorite")), "is_active": True, "tags": [], "steps": [{"step_number": index + 1, "instruction": step.strip()} for index, step in enumerate(body.get("steps", [])) if step.strip()], "requirements": requirements})
+            try:
+                requirements = build_requirements_from_rows(store, body.get("requirements", []))
+            except IngredientNotFoundError as exc:
+                json_response(self, {"error": "ingredient_not_found", "ingredient_name": exc.ingredient_name}, 400)
+                return
+            rating_value = float(body.get("rating", 0))
+            store["cocktails"].append({"id": next_id(store["cocktails"]), "name": name, "description": body.get("description", ""), "image_url": body.get("image_url", ""), "prep_time_minutes": int(body.get("prep_time_minutes", 5)), "alcohol_level": normalize_alcohol_level(body.get("alcohol_level"), body.get("alcohol_level") != "Sin alcohol"), "glassware": (body.get("glassware") or "").strip(), "instructions": body.get("instructions", ""), "rating": rating_value, "admin_rating": rating_value, "guest_rating_sum": 0.0, "guest_rating_count": 0, "is_favorite": bool(body.get("is_favorite")), "is_active": True, "tags": [], "steps": [{"step_number": index + 1, "instruction": step.strip()} for index, step in enumerate(body.get("steps", [])) if step.strip()], "requirements": requirements})
+            save_store(store)
+            json_response(self, {"ok": True})
+            return
+        if path == "/api/admin/suggestions/accept":
+            suggestion = next((item for item in store["suggestions"] if item["id"] == body.get("suggestion_id")), None)
+            if not suggestion:
+                json_response(self, {"error": "not_found"}, 404)
+                return
+            cocktail = next((item for item in store["cocktails"] if item["id"] == suggestion["cocktail_id"]), None)
+            if not cocktail:
+                json_response(self, {"error": "cocktail_not_found"}, 404)
+                return
+            try:
+                apply_cocktail_content_fields(cocktail, suggestion["proposed"], store)
+            except IngredientNotFoundError as exc:
+                json_response(self, {"error": "ingredient_not_found", "ingredient_name": exc.ingredient_name}, 400)
+                return
+            suggestion["status"] = "accepted"
+            save_store(store)
+            json_response(self, {"ok": True})
+            return
+        if path == "/api/admin/suggestions/reject":
+            suggestion = next((item for item in store["suggestions"] if item["id"] == body.get("suggestion_id")), None)
+            if not suggestion:
+                json_response(self, {"error": "not_found"}, 404)
+                return
+            suggestion["status"] = "rejected"
             save_store(store)
             json_response(self, {"ok": True})
             return
