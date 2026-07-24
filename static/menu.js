@@ -25,6 +25,7 @@ let selectedGlass = "";
 let lastFetchedCocktails = [];
 let lastVisibleCocktails = [];
 let rouletteSpinning = false;
+let lastRouletteWinnerId = null;
 
 function normalizeText(value) {
   return String(value || "")
@@ -566,21 +567,48 @@ function openCardById(cocktailId) {
   card.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
+function secureRandomIndex(max) {
+  if (max <= 1) return 0;
+  if (window.crypto && window.crypto.getRandomValues) {
+    // Math.random() draws from a PRNG that some engines seed/warm up in a
+    // way that can feel "sticky" across rapid repeated calls; getRandomValues
+    // pulls from the OS CSPRNG instead, so each spin is independently random.
+    const range = Math.floor(0xffffffff / max) * max;
+    const buffer = new Uint32Array(1);
+    let value;
+    do {
+      window.crypto.getRandomValues(buffer);
+      value = buffer[0];
+    } while (value >= range);
+    return value % max;
+  }
+  return Math.floor(Math.random() * max);
+}
+
 function runRoulette() {
   if (rouletteSpinning) return;
-  const candidates = lastVisibleCocktails.filter((cocktail) => cocktail.is_available);
-  const cards = candidates
-    .map((cocktail) => grid.querySelector(`[data-cocktail-card][data-id="${cocktail.id}"]`))
-    .filter(Boolean);
-  if (!cards.length) {
+  const pairs = lastVisibleCocktails
+    .filter((cocktail) => cocktail.is_available)
+    .map((cocktail) => ({ cocktail, card: grid.querySelector(`[data-cocktail-card][data-id="${cocktail.id}"]`) }))
+    .filter((pair) => pair.card);
+  if (!pairs.length) {
     showToast("No hay cocteles disponibles con estos filtros para sortear.");
     return;
   }
+  // Avoid landing on the exact same winner twice in a row so repeated spins
+  // over a short list don't feel rigged, unless there's only one option left.
+  let pool = pairs;
+  if (pairs.length > 1 && lastRouletteWinnerId !== null) {
+    const withoutLastWinner = pairs.filter((pair) => pair.cocktail.id !== lastRouletteWinnerId);
+    if (withoutLastWinner.length) pool = withoutLastWinner;
+  }
+  const winner = pool[secureRandomIndex(pool.length)];
+  const cards = pairs.map((pair) => pair.card);
+  const targetIndex = cards.indexOf(winner.card);
   grid.querySelectorAll(".roulette-winner").forEach((item) => item.classList.remove("roulette-winner"));
   rouletteSpinning = true;
   rouletteButton.disabled = true;
   rouletteButton.classList.add("spinning");
-  const targetIndex = Math.floor(Math.random() * cards.length);
   const totalDurationMs = 3200 + Math.random() * 1500;
   const startTime = performance.now();
   let highlighted = null;
@@ -597,6 +625,7 @@ function runRoulette() {
       highlighted.classList.remove("roulette-active");
       highlighted.classList.add("roulette-winner");
       highlighted.scrollIntoView({ behavior: "smooth", block: "center" });
+      lastRouletteWinnerId = winner.cocktail.id;
       rouletteButton.disabled = false;
       rouletteButton.classList.remove("spinning");
       rouletteSpinning = false;
