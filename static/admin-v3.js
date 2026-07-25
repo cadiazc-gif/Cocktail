@@ -8,6 +8,7 @@ const shoppingList = document.getElementById("shoppingList");
 const statsGrid = document.getElementById("statsGrid");
 const catalogCocktailGrid = document.getElementById("catalogCocktailGrid");
 const suggestionsList = document.getElementById("suggestionsList");
+const acceptAllSuggestionsButton = document.getElementById("acceptAllSuggestions");
 const cocktailSearchInput = document.getElementById("cocktailSearchInput");
 const ingredientSearchInput = document.getElementById("ingredientSearchInput");
 const inventoryCategoryFilters = document.getElementById("inventoryCategoryFilters");
@@ -474,6 +475,8 @@ function suggestionDiffRows(suggestion, cocktail) {
 
 function renderSuggestions(data) {
   const pending = (data.suggestions || []).filter((item) => item.status === "pending");
+  acceptAllSuggestionsButton.disabled = pending.length === 0;
+  acceptAllSuggestionsButton.textContent = pending.length > 1 ? `Aprobar todo (${pending.length})` : "Aprobar todo";
   if (!pending.length) {
     suggestionsList.innerHTML = `<div class="empty">No hay propuestas pendientes.</div>`;
     return;
@@ -605,6 +608,22 @@ async function login() {
   }
 }
 
+async function acceptAllSuggestions() {
+  acceptAllSuggestionsButton.disabled = true;
+  try {
+    const result = await postJson("/api/admin/suggestions/accept-all", {});
+    const acceptedCount = (result.accepted || []).length;
+    const failedCount = (result.failed || []).length;
+    adminNotice = failedCount
+      ? `Se aprobaron ${acceptedCount} propuestas. ${failedCount} no se pudieron aplicar (revisalas manualmente).`
+      : `Se aprobaron ${acceptedCount} propuestas.`;
+  } catch (error) {
+    adminNotice = "No pude aprobar todas las propuestas.";
+  }
+  await loadDashboard();
+}
+
+acceptAllSuggestionsButton.addEventListener("click", acceptAllSuggestions);
 loginButton.addEventListener("click", login);
 passwordInput.addEventListener("keydown", (event) => { if (event.key === "Enter") login(); });
 cocktailSearchInput.addEventListener("input", () => dashboardData && renderCatalog(dashboardData));

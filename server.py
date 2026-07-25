@@ -1084,6 +1084,31 @@ class CocktailHandler(BaseHTTPRequestHandler):
             save_store(store)
             json_response(self, {"ok": True})
             return
+        if path == "/api/admin/suggestions/accept-all":
+            pending = [item for item in store["suggestions"] if item["status"] == "pending"]
+            accepted_ids = []
+            failed_ids = []
+            for suggestion in pending:
+                cocktail = next((item for item in store["cocktails"] if item["id"] == suggestion["cocktail_id"]), None)
+                if not cocktail:
+                    failed_ids.append(suggestion["id"])
+                    continue
+                if suggestion.get("kind") == "favorite":
+                    cocktail["is_favorite"] = bool(suggestion["proposed"].get("is_favorite"))
+                else:
+                    try:
+                        apply_cocktail_content_fields(cocktail, suggestion["proposed"], store)
+                    except IngredientNotFoundError:
+                        failed_ids.append(suggestion["id"])
+                        continue
+                suggestion["status"] = "accepted"
+                accepted_ids.append(suggestion["id"])
+            # One save for the whole batch instead of one round-trip per
+            # suggestion — with Upstash as the store backend each save is a
+            # network call, so this is what actually makes "aprobar todo" fast.
+            save_store(store)
+            json_response(self, {"ok": True, "accepted": accepted_ids, "failed": failed_ids})
+            return
         if path == "/api/admin/suggestions/reject":
             suggestion = next((item for item in store["suggestions"] if item["id"] == body.get("suggestion_id")), None)
             if not suggestion:
